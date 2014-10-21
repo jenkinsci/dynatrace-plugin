@@ -1,0 +1,43 @@
+table.source {
+    border-style: solid;
+    border-color: #bbb;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.source td {
+    text-align: center;
+    white-space: nowrap;
+}
+table.source td.left {
+    text-align: left;
+}
+table.source td.right {
+    text-align: right;
+}
+table.source a {
+	text-decoration: none;
+}
+
+table.source th {
+    padding-left: 0.5em;
+    font-weight: bold;
+    background-color: #f0f0f0;
+    white-space: nowrap;
+}
+
+div.title {
+    background-color: #f0f0f0;
+    padding: 0px;
+    margin-top: 20px;
+}
+
+.light-red {
+	background-color: #EE6363;
+}
+
+#test-accordion h2 {
+	border:1px solid;
+	cursor: pointer;
+}

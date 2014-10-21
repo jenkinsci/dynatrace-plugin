@@ -1,0 +1,10 @@
+<!--
+  This view is used to render the plugin list page.
+-->
+<div>
+  This plugin makes it possible to integrate data from <a href="http://www.dynatrace.com">dynaTrace</a> into your Jenkins build.<br/>
+  By using dynaTrace in your unit and performance tests you can get deeper insight into what's actually happening in your tests and 
+  keep of metrics like executed database statements, the number of exceptions being thrown etc. Tests should be conducted with the dynaTrace
+  agent injected, and after the build, the
+  performance statistics will be fetched from the REST interface and shown in the Jenkins interface.
+</div>

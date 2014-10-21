@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core">
+    <div class="test-trend-caption">
+      ${%performance.trend.caption}
+      <br />
+      <div></div>
+      <br />
+      <a href="dynatrace-testautomation-dashboard/">
+        <img class="trend" src="dynatrace-testautomation-dashboard/summarizerGraph"/>
+      </a>
+    </div>
+</j:jelly>
