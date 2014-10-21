@@ -27,3 +27,6 @@ In the advanced settings, you have the following options:
 
 - You can change if the build result from the dynaTrace Server should also affect the Jenkins build result - if this is enabled, tests that are considered as volatile or failed (from a functional or performance perspective) by dynaTrace will cause the Jenkins build to be unstable or fail. By default, this feature is enabled
 - Depending on the dynaTrace Server load and the volume of tests, it might take a while until the test results are available through the REST interface. By default, the Jenkins plugin will try to get data 6 times, 10 seconds apart. If necessary, you can increase the number of tries here. Please keep in mind that this increases the build duration.
+
+## Maintainer ##
+Wolfgang Gottesheim, [wolfgang.gottesheim@dynatrace.com](mailto:wolfgang.gottesheim@dynatrace.com)
