@@ -1,5 +1,0 @@
-<j:jelly xmlns:j="jelly:core">
-	<td>${it.getValue()}</td>
-	<td>${it.getHigh()}</td>
-	<td>${it.getLast()}</td>
-</j:jelly>
