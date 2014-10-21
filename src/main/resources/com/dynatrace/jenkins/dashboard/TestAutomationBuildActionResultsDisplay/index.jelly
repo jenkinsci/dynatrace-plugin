@@ -1,0 +1,57 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+	<l:layout title="dynaTrace Test Automation Details for Build" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags"
+		css="${JENKINS_CONTEXT_PATH}/plugin/dynatrace-dashboard/css/style.css">
+		<st:include it="${it.build}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/effects.js"></script>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/scriptaculous.js"></script>
+			
+			
+			<div id="test-accordion" class="accordion">      
+				<j:set var="report" value="${it.getCurrentReport()}" />
+				<j:set var="previousReport" value="${report.getLastBuildReport()}" />
+				<h1>dynaTrace Test Automation Report for Build ${report.buildAction.build.number}</h1>
+	
+				<j:if test="${report.failedCount > 0}">
+		     		<h2 id="failed_toggle" onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">${report.failedCount} Failed Tests (click to toggle)</h2>
+					<div id="failed_content" style="display:none;">
+					<j:forEach var="testCase" items="${report.failedTestCases}">
+						<jm:testCaseTable it="${testCase}" previousReport="${previousReport}" />
+					</j:forEach>
+					</div>
+				</j:if>
+				
+				<j:if test="${report.degradedCount > 0}">
+					<h2 class="accordion_toggle" onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">${report.degradedCount} Degraded Tests (click to toggle)</h2>
+					<div class="accordion_content" style="display:none;">
+					<j:forEach var="testCase" items="${report.degradedTestCases}">
+						<jm:testCaseTable it="${testCase}" previousReport="${previousReport}" />
+					</j:forEach>
+					</div>
+				</j:if>
+				
+				
+				<j:if test="${report.volatileCount > 0}">
+					<h2 class="accordion_toggle" onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">${report.volatileCount} Volatile Tests (click to toggle)</h2>
+					<div class="accordion_content" style="display:none;">
+					<j:forEach var="testCase" items="${report.volatileTestCases}">
+						<jm:testCaseTable it="${testCase}" previousReport="${previousReport}" />
+					</j:forEach>
+					</div>
+				</j:if>
+				
+				
+				<j:if test="${report.passedCount > 0}">
+					<h2 class="accordion_toggle" onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">${report.passedCount} Passed Tests (click to toggle)</h2>
+					<div class="accordion_content" style="display:none;">
+					<j:forEach var="testCase" items="${report.passedTestCases}">
+						<jm:testCaseTable it="${testCase}" previousReport="${previousReport}" />
+					</j:forEach> 
+					</div>
+				</j:if>
+			</div>  
+			
+			
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
