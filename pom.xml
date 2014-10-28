@@ -38,19 +38,20 @@ DAMAGE.
   <version>1.0.5</version>
   <packaging>hpi</packaging>
 
-  <name>dynaTrace Test Automation Dashboard Plugin for Jenkins</name>
-  <url>https://community.compuwareapm.com/community/display/DL/Test+Automation+Plugin+for+Jenkins</url>
+  <name>dynaTrace Test Automation Dashboard Plugins</name>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/Dynatrace+Plugin</url>
 
   <scm>
-    <url>https://github.com/wgottesheim/dynatrace-jenkins-plugin/</url>
-    <developerConnection>scm:git:git://github.com/wolfgang.gottesheim/dynatrace-jenkins-plugin.git</developerConnection>
+      <connection>scm:git:ssh://github.com/jenkinsci/dynatrace-plugin.git</connection>
+      <developerConnection>scm:git:ssh://git@github.com/jenkinsci/dynatrace-plugin.git</developerConnection>
+      <url>https://github.com/jenkinsci/dynatrace-plugin</url>
   </scm>
   
   <developers>
     <developer>
-      <id>cwat-wgottesh</id>
+      <id>wgottesheim</id>
       <name>Wolfgang Gottesheim</name>
-      <email>wolfgang.gottesheim@compuware.com</email>
+      <email>wolfgang.gottesheim@dynatrace.com</email>
     </developer>
   </developers>
 
