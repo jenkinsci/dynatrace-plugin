@@ -6,7 +6,7 @@ Jenkins Plug-in allows Dynatrace AppMon test results to be published to Jenkins
 
 ### Blogs
 
--[Continuous Performance Validation in Continuous Integration Environments](http://apmblog.dynatrace.com/2013/11/27/continuous-performance-validation-in-continuous-integration-environments/)
+- [Continuous Performance Validation in Continuous Integration Environments](http://apmblog.dynatrace.com/2013/11/27/continuous-performance-validation-in-continuous-integration-environments/)
 - [Software Quality Metrics for your Continuous Delivery Pipeline – Part I](http://apmblog.dynatrace.com/2014/03/13/software-quality-metrics-for-your-continuous-delivery-pipeline-part-i/)
 - [Software Quality Metrics for your Continuous Delivery Pipeline – Part II: Database](Software Quality Metrics for your Continuous Delivery Pipeline – Part II: Database)
 - [Software Quality Metrics for your Continuous Delivery Pipeline – Part III – Logging](http://apmblog.dynatrace.com/2014/06/17/software-quality-metrics-for-your-continuous-delivery-pipeline-part-iii-logging/)
