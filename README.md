@@ -14,6 +14,20 @@ This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and dis
 
 not available yet for this version
 
+## Configuration
+
+### Global settings
+
+The global settings for the plugin are located under Manage Jenkins / Configure System / Dynatrace Application Monitoring. The connection to the Dynatrace AppMon Server is configured in this section. The configured user needs to have the right credentials to be able to access the Test Automation REST API.
+
+### Build settings
+
+### Build environment
+
+### Build step
+
+### Post build step
+
 ## Additional Resources
 
 ### Blogs
