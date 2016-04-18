@@ -1,6 +1,17 @@
 # Dynatrace-Jenkins-Plugin
 Jenkins Plug-in allows Dynatrace AppMon test results to be published to Jenkins
 
+## Installation
+
+### Manual Installation
+* in Jenkins, click on "Manage Jenkins" / "Manage Plugins"
+* click on the "Advanced" tab
+* upload the plugin (dynatrace-dashboard.hpi) in the section "Upload Plugin" 
+* restart Jenkins when the installation is complete
+
+### Using Jenkins Update Centre 
+
+not available yet for this version
 
 ## Additional Resources
 
