@@ -33,6 +33,8 @@ In the build configuration (build name / configure), first enable *Dynatrace App
 
 Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server.
 
+![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
+
 ## Additional Resources
 
 ### Blogs
