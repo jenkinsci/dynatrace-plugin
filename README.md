@@ -27,11 +27,9 @@ The advanced section enables you to set a delay before retrieving the test resul
 
 ### Build settings
 
-### Build environment
+In the build settings (build name / configure), first enable Dynatrace Application Monitoring in the Build Environment and fill the required fields.
 
-### Build step
-
-### Post build step
+![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
 
 ## Additional Resources
 
