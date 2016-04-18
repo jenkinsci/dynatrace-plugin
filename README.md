@@ -47,4 +47,6 @@ The advanced section enables you to set a delay before retrieving the test resul
 
 Please post any problems, questions or suggestions to the Dynatrace Community's [Application Monitoring & UEM Forum](https://answers.dynatrace.com/spaces/146/index.html).
 
+## Known issues
+
 ## License
