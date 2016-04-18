@@ -43,6 +43,8 @@ The testrun id is available as environment variable which can be passed to the D
 server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
+At the end of the build, add a **post-build action**.
+
 ## Additional Resources
 
 ### Blogs
