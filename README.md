@@ -25,9 +25,9 @@ The global settings for the plugin are located under Manage Jenkins / Configure 
 
 The advanced section enables you to set a delay before retrieving the test results from the server. Change this settings if you are not getting all the test results in Jenkins.
 
-### Build settings
+### Build configuration
 
-In the build settings (build name / configure), first enable Dynatrace Application Monitoring in the Build Environment and fill the required fields.
+In the build configuration (build name / configure), first enable Dynatrace Application Monitoring in the **Build Environment** and fill the required fields.
 
 ![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
 
