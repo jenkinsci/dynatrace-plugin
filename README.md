@@ -31,9 +31,17 @@ In the build configuration (build name / configure), first enable *Dynatrace App
 
 ![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
 
-Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server.
+Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server before running your tests.
 
 ![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
+
+The testrun id and the server url are available as environment variables which can be passed to the Dynatrace AppMon agent in the build script.
+
+**Example with Ant:**
+```xml
+<jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},
+server=${dtServerUrl},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
+```
 
 ## Additional Resources
 
