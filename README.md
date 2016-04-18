@@ -12,12 +12,8 @@ Jenkins Plug-in allows Dynatrace AppMon test results to be published to Jenkins
 - [Software Quality Metrics for your Continuous Delivery Pipeline – Part III – Logging](http://apmblog.dynatrace.com/2014/06/17/software-quality-metrics-for-your-continuous-delivery-pipeline-part-iii-logging/)
 - [Automated Performance Analysis for Web API Tests](http://apmblog.dynatrace.com/2014/12/23/automated-performance-analysis-web-api-tests/)
 
-### Presentations
-
-### Webinar Recordings
-
 ## Problems? Questions? Suggestions?
 
-Feel free to share any problems, questions and suggestions with the Dynatrace Community's [Application Monitoring & UEM Forum](https://answers.dynatrace.com/spaces/146/index.html).
+Please post any problems, questions or suggestions to the Dynatrace Community's [Application Monitoring & UEM Forum](https://answers.dynatrace.com/spaces/146/index.html).
 
 ## License
