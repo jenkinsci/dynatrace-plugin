@@ -42,7 +42,7 @@ The testrun id is available as environment variable which can be passed to the D
 server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
-At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the AppMon test results will fail the build.
+At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
 
 ![post build action](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/post_build_action.png)
 
