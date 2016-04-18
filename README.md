@@ -1,6 +1,6 @@
 # Dynatrace Jenkins Plugin
 
-This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and displays it through charts and tables on the project and build level.
+![Jenkins](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/logo/jenkins.png)This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and displays it through charts and tables on the project and build level.
 
 ## Installation
 
