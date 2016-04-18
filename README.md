@@ -27,9 +27,11 @@ The advanced section enables you to set a delay before retrieving the test resul
 
 ### Build configuration
 
-In the build configuration (build name / configure), first enable Dynatrace Application Monitoring in the **Build Environment** and fill the required fields.
+In the build configuration (build name / configure), first enable *Dynatrace Application Monitoring* in the **Build Environment** and fill the required fields.
 
 ![alt tag](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
+
+Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server.
 
 ## Additional Resources
 
