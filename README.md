@@ -43,8 +43,8 @@ The testrun id is available as environment variable which can be passed to the D
 
 **Example with Ant:**
 ```xml
-<jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},
-server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
+<jvmarg value="-agentpath:$/var/lib/dynatrace/agent/lib64/libdtagent.so=name=JavaAgent,
+server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
 At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
