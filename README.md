@@ -39,9 +39,9 @@ Then, for each test category (Unit Test, Performance Test, Browser Test or Web A
 
 ![build step register testrun](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
 
-The testrun id is available as environment variable which can be passed to the Dynatrace AppMon agent in the build script.
+The testrun id is available as environment variable which can be passed to the Dynatraceagent in the build script.
 
-**Example with Ant:**
+**Example:**
 ```xml
 <jvmarg value="-agentpath:$/var/lib/dynatrace/agent/lib64/libdtagent.so=name=JavaAgent,
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
