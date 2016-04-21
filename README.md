@@ -51,17 +51,17 @@ At the end of the build, add the Dynatrace AppMon **post-build action** to retri
 
 ![post build action](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/post_build_action.png)
 
-### FAQ
+## FAQ
 
-## Do I need to use an additional plug-in for Ant, Maven, MS Build to register my tests?
+### Do I need to use an additional plug-in for Ant, Maven, MS Build to register my tests?
 
 Not anymore. The registration of the test run is done through the Jenkins Plugin. The test run id ${dtTestrunID} is passed as an environment variable and can be used in your build scripts.
 
-## Can I use variables to set the version information?
+### Can I use variables to set the version information?
 
 Build number and jenkins jobs are passed automatically to Dynatrace. Version (major, minor, revision, milestone) currently needs to be set manually (fields are not mandatory). We are looking into allowing the use of variables to set those fields.
 
-## Why am I getting a SSLHandshakeException when trying to connect through HTTPS?
+### Why am I getting a SSLHandshakeException when trying to connect through HTTPS?
 
 Dynatrace AppMon Server uses a self-signed certificate per default. Since this certificate doesn't match the URL you are using to access the Server, Jenkins returns an error when trying to connect.
 
