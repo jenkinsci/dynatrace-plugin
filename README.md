@@ -34,6 +34,12 @@ In the build configuration (build name / configure), first enable *Dynatrace App
 
 #### Option 1: Test Run Registration from Jenkins
 
+Use this option when:
+* you want an easy integration and don't want to adapt your build scripts too much
+* you are OK with defining the version in Jenkins to register the test run
+
+<img src="/img/conf/process_test_run_registration_jenkins.png" />
+
 Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server before running your tests.
 
 ![build step register testrun](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
@@ -47,6 +53,12 @@ server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
 #### Option 2: Test Run Registration from Maven/Ant/...
+
+Use this option when:
+* you don't mind using an additional plug-in in your Ant/Maven scripts
+* you want to re-use the Ant/Maven version to register the test run
+
+<img src="/img/conf/process_test_run_registration_plugin.png" />
 
 ### Post Build Action
 
