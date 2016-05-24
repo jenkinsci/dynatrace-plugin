@@ -60,6 +60,10 @@ Use this option when:
 
 <img src="/img/conf/process_test_run_registration_plugin.png" />
 
+* do not add the Register Test Run step in Jenkins
+* install & configure the Ant/Maven/... plug-in in your build script: https://community.dynatrace.com/community/display/DL/Automation+Library+%28Ant%2C+Maven%29+for+Dynatrace
+* register the Test Run using the Ant/Maven/... plug-in and make sure to pass the Jenkins build id ${BUILD_ID} in the meta data of the test run. The Jenkins Plug-in will use this build id to retrieve the results.
+
 ### Post Build Action
 
 At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
