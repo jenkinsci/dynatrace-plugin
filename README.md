@@ -32,6 +32,8 @@ In the build configuration (build name / configure), first enable *Dynatrace App
 
 ![build environment](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
 
+#### Option 1: Test Run Registration from Jenkins
+
 Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server before running your tests.
 
 ![build step register testrun](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
@@ -43,6 +45,10 @@ The testrun id is available as environment variable which can be passed to the D
 <jvmarg value="-agentpath:$/var/lib/dynatrace/agent/lib64/libdtagent.so=name=JavaAgent,
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
+
+#### Option 2: Test Run Registration from Maven/Ant/...
+
+### Post Build Action
 
 At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
 
