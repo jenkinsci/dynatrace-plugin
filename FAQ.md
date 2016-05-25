@@ -14,6 +14,37 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 ##### What do I need to change in my Ant Script?
 > [Option 1](README.md#option1): Test Run Registration from Jenkins
 
+```xml
+<!-- dynatrace settings -->
+<property name="dt_agent_name" value="JUnit_UnitTest"/>
+<!-- collector to which the agent connects itself -->
+<property name="dt_server" value="192.168.56.1:9998"/> 
+  
+<!-- dynatrace agent path -->
+<condition property="dt_agent_path" value="C:\Program Files\dynaTrace\dynaTrace 6.3\agent\lib64\dtagent.dll">
+	<os family="windows"/>
+</condition>
+<condition property="dt_agent_path" value="/var/lib/dynatrace/agent/lib64/libdtagent.so">
+	<os family="unix"/>
+</condition>
+
+<target name="junit" depends="jar">
+	<junit printsummary="yes">
+		<!-- dtTestrunID is passed from Jenkins as environment variable -->
+		<jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
+		<classpath>
+			<path refid="classpath"/>
+			<path refid="application"/>
+		</classpath>
+		
+		<batchtest fork="yes">
+			<fileset dir="${src.dir}" includes="*Test.java"/>
+		</batchtest>
+	</junit>
+</target>
+```
+
+
 > [Option 2](README.md#option2): Test Run Registration from Ant
 
 ##### What do I need to change in my Maven Script?
