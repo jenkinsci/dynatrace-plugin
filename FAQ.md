@@ -55,6 +55,8 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 	  <includes>
 		<include>**/Unit*.java</include>
 	  </includes>
+	  <!-- dtTestrunID is passed from Jenkins as environment variable --> 
+	  <!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
 	  <argLine>-agentpath:"${dt_agent_path}"=name=${dt_agent_name},server=${dt_server},optionTestRunIdJava=${dtTestrunID}</argLine>
 	</configuration>
 </plugin>
@@ -71,6 +73,8 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
   <includes>
 	<include>**/Integration*.java</include>
   </includes>
+  <!-- dtTestrunID is passed from Jenkins as environment variable --> 
+  <!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
   <argLine>-agentpath:"${dt_agent_path}"=name=${dt_agent_name},server=${dt_server},optionTestRunIdJava=${dtTestrunID}</argLine>
 </configuration>
 <executions>
