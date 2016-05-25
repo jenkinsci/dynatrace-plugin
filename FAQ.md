@@ -15,7 +15,7 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 > [Option 1](README.md#option1): Test Run Registration from Jenkins
 
 > in this case, the Test Run Id will be passed from Jenkins to your Ant script as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
-> Sample:
+> Example:
 
 ```xml
 <target name="junit" depends="jar"> 
@@ -40,6 +40,47 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 ##### What do I need to change in my Maven Script?
 
 > [Option 1](README.md#option1): Test Run Registration from Jenkins
+
+> in this case, the Test Run Id will be passed from Jenkins to your Ant script as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
+> Example with Surefire:
+
+```xml
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<version>2.19.1</version>
+	<configuration>
+	  <includes>
+		<include>**/Unit*.java</include>
+	  </includes>
+	  <argLine>-agentpath:"${dt_agent_path}"=name=${dt_agent_name},server=${dt_server},optionTestRunIdJava=${dtTestrunID}</argLine>
+	</configuration>
+</plugin>
+```
+
+> Example with Failsafe:
+
+```xml
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-failsafe-plugin</artifactId>
+<version>2.19.1</version>
+<configuration>
+  <includes>
+	<include>**/Integration*.java</include>
+  </includes>
+  <argLine>-agentpath:"${dt_agent_path}"=name=${dt_agent_name},server=${dt_server},optionTestRunIdJava=${dtTestrunID}</argLine>
+</configuration>
+<executions>
+  <execution>
+	<goals>
+	  <goal>integration-test</goal>
+	  <goal>verify</goal>
+	</goals>
+  </execution>
+</executions>
+</plugin>
+```
 
 > [Option 2](README.md#option2): Test Run Registration from Maven
 
