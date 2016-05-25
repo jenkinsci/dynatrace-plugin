@@ -4,6 +4,8 @@
 
 This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and displays it through charts and tables on the project and build level.
 
+Download Latest Release Candidate: https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/releases/download/2.0.1/dynatrace-dashboard.hpi
+
 #### Table of Contents
 
 * [Installation](#installation)  
