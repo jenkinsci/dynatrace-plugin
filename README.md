@@ -1,4 +1,4 @@
-<img src="/img/logo/jenkins.png" />
+<img src="/img/logo/jenkins.png" width="300" />
 
 # Dynatrace Jenkins Plugin
 
