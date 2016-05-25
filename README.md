@@ -298,7 +298,55 @@ in this case, the Test Run Id will be passed from Jenkins to your Ant script as 
 <a name="ant2"/>
 #### Option 2
 
+In this case, the test run registration is done directly from Maven - enabling you to re-use Maven version information and meta-data.
+
 Download and install the Dynatrace Ant Library as described here: https://community.dynatrace.com/community/display/DL/Dynatrace+Test+Automation+and+Ant 
+
+**Import the Dynatrace Ant Task definitions**:
+
+```xml
+<property name="dtBaseDir" value="${libs}/dynaTrace" />
+<import file="${dtBaseDir}/dtTaskDefs.xml"/>
+```
+
+**Call DtStartTest before running your Tests**:
+
+```xml
+<target name="test" depends="compile,test-compile" description="Run tests">
+<mkdir dir="${test.result.dir}"/>
+<mkdir dir="${test.report.dir}"/>
+
+<!-- the build id (passed from Jenkins) will be re-used by Dynatrace to retrieve the test results --> 
+<DtStartTest
+	versionMajor="${version.major}"
+	versionMinor="${version.minor}"
+	versionRevision="${version.revision}"
+	versionMilestone="test-parallel"
+	versionBuild="${BUILD_ID}"
+	profilename="${dynatrace.profile.name}"
+	username="${dynatrace.server.user}"
+	password="${dynatrace.server.pass}"
+	serverurl="${dynatrace.server.url}"
+	category="${dynatrace.test.category}">
+</DtStartTest>
+```
+**Finally run your Unit Tests**:
+
+```xml
+<junit printsummary="yes"> 
+<!-- dtTestrunID is passed from the Dynatrace Ant task --> 
+<!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
+<jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" /> 
+<classpath> 
+	<path refid="classpath"/> 
+	<path refid="application"/> 
+</classpath> 
+<batchtest fork="yes"> 
+	<fileset dir="${src.dir}" includes="*Test.java"/> 
+</batchtest> 
+</junit> 
+```
+
 
 <a name="feedback"/>
 ## Problems? Questions? Suggestions?
