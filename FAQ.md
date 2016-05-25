@@ -17,6 +17,7 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 
 ## Known Issues
 
+<a name="jenkins2.5" />
 ##### Jenkins 2.5+ build step execution failed with java.lang.NullPointerException
 
 Due to a new security feature introduced in Jenkins 2.5 (SECURITY-170, see https://wiki.jenkins-ci.org/display/SECURITY/Jenkins+Security+Advisory+2016-05-11) custom build parameters cannot be passed to build scripts as environment variables. 
