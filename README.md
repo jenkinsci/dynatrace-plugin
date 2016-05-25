@@ -219,7 +219,7 @@ Download and install the Dynatrace Maven Plug-in as described here: https://comm
 </plugin>
 ```
 
-**Example with Surefire**:
+**Example with Failsafe**:
 
 ```xml
 <plugin>
