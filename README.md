@@ -47,6 +47,8 @@ not available yet for this version
 <a name="configuration"/>
 ## Configuration
 
+If you are using Jenkins 2.5 or higher, you need to enable the use of environment variables - see [Jenkins 2.5+ build step execution failed with java.lang.NullPointerException](FAQ.md#jenkins2.5)
+
 <a name="global"/>
 ### Global settings
 
