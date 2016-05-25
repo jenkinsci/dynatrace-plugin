@@ -11,6 +11,17 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 ##### Dynatrace AppMon version compatibility - which version works with the plugin?
 > 6.1 and newer
 
+##### What do I need to change in my Ant Script?
+> [Option 1](README.md#option1): Test Run Registration from Jenkins
+
+> [Option 2](README.md#option2): Test Run Registration from Ant
+
+##### What do I need to change in my Maven Script?
+
+> [Option 1](README.md#option1): Test Run Registration from Jenkins
+
+> [Option 2](README.md#option2): Test Run Registration from Maven
+
 
 ##### Do I need to use an additional plug-in for Ant, Maven, MS Build to register my tests?
 
