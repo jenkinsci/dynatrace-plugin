@@ -43,6 +43,7 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 > [Option 1](README.md#option1): Test Run Registration from Jenkins
 
 > in this case, the Test Run Id will be passed from Jenkins to your Ant script as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
+
 > Example with Surefire:
 
 ```xml
