@@ -165,6 +165,59 @@ in this case, the Test Run Id will be passed from Jenkins to your Ant script as 
 <a name="maven2"/>
 #### Option 2
 
+In this case, the test run registration is done directly from Maven - enabling you to re-use Maven version information and meta-data.
+
+Download and install the Dynatrace Maven Plug-in as described here: https://community.dynatrace.com/community/display/DL/Dynatrace+Test+Automation+and+Maven
+
+** Add the Dynatrace Automation Plug-in in your dependency list**:
+```xml
+<dependencies>
+	<dependency>
+		<groupId>dynaTrace</groupId>
+		<artifactId>dtAutomation</artifactId>
+		<version>${dynaTrace.version}</version>
+	</dependency>
+</dependencies>
+```
+
+**Example with Surefire**:
+
+```xml
+<plugin>
+	<groupId>dynaTrace</groupId>
+	<artifactId>dtAutomation</artifactId>
+	<version>${dynaTrace.version}</version>
+	<executions>
+		<execution>
+			<id>DT_StartTest_UnitTest</id>
+			<configuration>
+				<versionBuild>${BUILD_ID}</versionBuild>
+				<profileName>junit-example-dt-maven</profileName>
+				<category>unit</category>
+			</configuration>
+			<!-- start this test in the process-test-classes phase which is the one before the tests are executed -->
+			<phase>process-test-classes</phase>
+				<goals>
+					<!-- call the startTest goal of the Dynatrace Maven plugin -->
+					<goal>startTest</goal>
+				</goals>
+		</execution>
+</plugin>
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<version>2.19.1</version>
+	<configuration>
+		<includes>
+			<include>**/Unit*.java</include>
+		</includes>
+		<!-- dtTestrunID is passed from the Dynatrace Maven Plug-in --> 
+		<!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
+		<argLine>-agentpath:"${dt_agent_path}"=name=${dt_agent_name},server=${dt_server},optionTestRunIdJava=${dtTestrunID}</argLine>
+	</configuration>
+</plugin>
+```
+
 <a name="ant"/>
 ### Ant
 
@@ -198,7 +251,7 @@ in this case, the Test Run Id will be passed from Jenkins to your Ant script as 
 <a name="ant2"/>
 #### Option 2
 
-
+Download and install the Dynatrace Ant Library as described here: https://community.dynatrace.com/community/display/DL/Dynatrace+Test+Automation+and+Ant 
 
 <a name="feedback"/>
 ## Problems? Questions? Suggestions?
