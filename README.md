@@ -15,6 +15,13 @@ This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and dis
     * [Option 1: Test Run Registration from Jenkins](#option1)
     * [Option 2: Test Run Registration from Maven/Ant/...](#option2)
   * [Post Build Action](#post)
+* [Examples](#examples)
+ * [Maven](#maven)
+  * [Option 1](#maven1)
+  * [Option 2](#maven2)
+ * [Ant](#ant)
+  * [Option 1](#ant1)
+  * [Option 2](#ant2)
 * [Problems? Questions? Suggestions?](#feedback)
 * [Additional Resources](#resources)
   * [Dynatrace AppMon Documentation](#doc)
@@ -96,6 +103,53 @@ Use this option when:
 At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
 
 ![post build action](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/post_build_action.png)
+
+<a name="examples"/>
+## Examples
+
+<a name="maven"/>
+### Maven
+
+<a name="maven1"/>
+#### Option 1
+
+<a name="maven2"/>
+#### Option 2
+
+<a name="ant"/>
+### Ant
+
+<a name="ant1"/>
+#### Option 1
+
+[Option 1: Test Run Registration from Jenkins](#option1)
+
+in this case, the Test Run Id will be passed from Jenkins to your Ant script as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
+
+Example:
+
+```xml
+<target name="junit" depends="jar"> 
+<junit printsummary="yes"> 
+<!-- dtTestrunID is passed from Jenkins as environment variable --> 
+<!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
+<jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" /> 
+<classpath> 
+	<path refid="classpath"/> 
+	<path refid="application"/> 
+</classpath> 
+<batchtest fork="yes"> 
+	<fileset dir="${src.dir}" includes="*Test.java"/> 
+</batchtest> 
+</junit> 
+</target> 
+```
+
+
+<a name="ant2"/>
+#### Option 2
+
+
 
 <a name="feedback"/>
 ## Problems? Questions? Suggestions?
