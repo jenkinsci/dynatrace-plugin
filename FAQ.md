@@ -21,7 +21,7 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 <target name="junit" depends="jar"> 
 <junit printsummary="yes"> 
 <!-- dtTestrunID is passed from Jenkins as environment variable --> 
-<!–- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
+<!-- dt_agent_path, dt_agent_name and dt_server needs to be configured in your script or passed as environment variable -->
 <jvmarg value="-agentpath:${dt_agent_path}=name=${dt_agent_name},server=${dt_server},loglevel=warning,optionTestRunIdJava=${dtTestrunID}" /> 
 <classpath> 
 	<path refid="classpath"/> 
