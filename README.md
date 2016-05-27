@@ -27,6 +27,7 @@ Download Latest Release Candidate: https://github.com/Dynatrace/Dynatrace-Jenkin
 * [Problems? Questions? Suggestions?](#feedback)
 * [Additional Resources](#resources)
   * [Dynatrace AppMon Documentation](#doc)
+  * [Webinar](#webinar)
   * [Blogs](#blogs)
 
 
@@ -367,6 +368,12 @@ Download and install the Dynatrace Ant Library as described here: https://commun
 - [Continuous Delivery & Test Automation](https://community.dynatrace.com/community/pages/viewpage.action?pageId=215161284)
 - [Capture Performance Data from Tests](https://community.dynatrace.com/community/display/DOCDT63/Capture+Performance+Data+from+Tests)
 - [Integrate Dynatrace in Continous Integration Builds](https://community.dynatrace.com/community/display/DOCDT63/Integrate+Dynatrace+in+Continuous+Integration+Builds)
+
+<a name="webinar"/>
+### Webinar
+
+- [Online Perf Clinic - Eclipse and Jenkins Integration](https://youtu.be/p4Vh6BWlPjg)
+- [Online Perf Clinic - Metrics-Driven Continuous Delivery with Dynatrace Test Automation](https://youtu.be/TXPSDpy7unw)
 
 <a name="blogs"/>
 ### Blogs
