@@ -1,0 +1,48 @@
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+	<j:set var="previousResult" value="${previousReportDetails.getCorrespondingTestResult(testResult, testCategory)}" />
+
+	<h4>${testResult.testName}</h4>
+	<p>
+		${it.formatMessage(M_test.result.summary.timestamp, testResult.formattedTimestamp)}<br/>
+		${it.formatMessage(M_test.result.summary.platform, testResult.platform)}<br/>
+		${it.formatMessage(M_test.result.summary.status, testResult.status)}
+		<j:if test="${previousResult != null}">
+			<br/>${it.formatMessage(M_test.result.summary.previous.status, previousResult.status)}
+		</j:if>
+	</p>
+
+	<table id="buildActionTable" class="TATable">
+		<thead>
+			<tr>
+				<th rowspan="2">${M_table.column.measure}</th>
+				<th colspan="4">${M_table.column.current.build}</th>
+				<j:if test="${previousReport != null}">
+					<th colspan="4">${M_table.column.previous.build}</th>
+				</j:if>
+			</tr>
+			<tr>
+				<th>${M_table.column.value}</th>
+				<th>${M_table.column.expected.min}</th>
+				<th>${M_table.column.expected.max}</th>
+				<th>${M_table.column.violation.percentage}</th>
+				<j:if test="${previousReport != null}">
+					<th>${M_table.column.value}</th>
+					<th>${M_table.column.expected.min}</th>
+					<th>${M_table.column.expected.max}</th>
+					<th>${M_table.column.violation.percentage}</th>
+				</j:if>
+			</tr>
+		</thead>
+		<j:forEach var="measure" items="${testResult.testMeasures}">
+			<tr class="${h.ifThenElse(testResult.failed,'red','')}">
+				<td class="measureName">
+					${measure.getMetricGroup()} - ${measure.getName()} (${measure.unit})
+				</td>
+				<jm:testResultsTableRow it="${measure}" />
+				<j:if test="${previousReportDetails != null}">
+					<jm:testResultsTableRow it="${previousResult.getMeasureByName(measure.getMetricGroup(),measure.getName())}" />
+				</j:if>
+			</tr>
+		</j:forEach>
+	</table>
+</j:jelly>

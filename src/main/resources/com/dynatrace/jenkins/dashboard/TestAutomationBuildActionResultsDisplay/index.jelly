@@ -1,0 +1,89 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+	<l:layout title="Dynatrace AppMon Test Result" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags"
+		css="${JENKINS_CONTEXT_PATH}/plugin/dynatrace-dashboard/css/style.css">
+		<st:include it="${it.build}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/effects.js"></script>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/scriptaculous.js"></script>
+			
+			
+			<div id="test-accordion" class="accordion">      
+				<j:set var="report" value="${it.getCurrentReport()}" />
+				<j:set var="previousReport" value="${report.getLastBuildReport()}" />
+				<h1>dynaTrace Test Automation Report for Build ${report.buildAction.build.number}</h1>
+
+				<j:set var="collapsed" value="${false}" />
+				<j:if test="${report.failedCount > 0}">
+		     		<h2 id="failed_toggle"
+						class="testResultsDivHeader"
+						onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">
+						${report.failedCount} Failed Tests
+					</h2>
+					<div style="${h.ifThenElse(collapsed,'display:none','')}">
+						<j:forEach var="testCase" items="${report.failedTestCases}">
+							<jm:oldTestCaseTable it="${testCase}" previousReport="${previousReport}" />
+						</j:forEach>
+					</div>
+					<j:set var="collapsed" value="${true}" />
+				</j:if>
+
+				<j:if test="${report.degradedCount > 0}">
+					<h2 id="degraded_toggle"
+						class="testResultsDivHeader"
+						onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">
+						${report.degradedCount} Degraded Tests
+					</h2>
+					<div style="${h.ifThenElse(collapsed,'display:none','')}">
+						<j:forEach var="testCase" items="${report.degradedTestCases}">
+							<jm:oldTestCaseTable it="${testCase}" previousReport="${previousReport}" />
+						</j:forEach>
+					</div>
+					<j:set var="collapsed" value="${true}" />
+				</j:if>
+
+				<j:if test="${report.volatileCount > 0}">
+					<h2 id="volatile_toggle"
+						class="testResultsDivHeader"
+						onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">
+						${report.volatileCount} Volatile Tests
+					</h2>
+					<div style="${h.ifThenElse(collapsed,'display:none','')}">
+						<j:forEach var="testCase" items="${report.volatileTestCases}">
+							<jm:oldTestCaseTable it="${testCase}" previousReport="${previousReport}" />
+						</j:forEach>
+					</div>
+					<j:set var="collapsed" value="${true}" />
+				</j:if>
+
+				<j:if test="${report.improvedCount > 0}">
+					<h2 id="improved_toggle"
+						class="testResultsDivHeader"
+						onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">
+						${report.volatileCount} Improved Tests
+					</h2>
+					<div style="${h.ifThenElse(collapsed,'display:none','')}">
+						<j:forEach var="testCase" items="${report.improvedTestCases}">
+							<jm:oldTestCaseTable it="${testCase}" previousReport="${previousReport}" />
+						</j:forEach>
+					</div>
+					<j:set var="collapsed" value="${true}" />
+				</j:if>
+
+				<j:if test="${report.passedCount > 0}">
+					<h2 id="passed_toggle"
+						class="testResultsDivHeader"
+						onclick="var theDiv = $(this).next(); if(theDiv.style.display=='none') { theDiv.appear(); } else { theDiv.hide(); }">
+						${report.passedCount} Passed Tests
+					</h2>
+					<div style="${h.ifThenElse(collapsed,'display:none','')}">
+						<j:forEach var="testCase" items="${report.passedTestCases}">
+							<jm:oldTestCaseTable it="${testCase}" previousReport="${previousReport}" />
+						</j:forEach>
+					</div>
+				</j:if>
+			</div>  
+			
+			
+		</l:main-panel>
+	</l:layout>
+</j:jelly>

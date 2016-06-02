@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+    <t:summary icon="/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png">
+        <div>
+            <a href="${it.urlName}/">${%link.test.result}</a>
+            <st:nbsp/>
+            <jm:testResultSummary report="${it.currentReport}" />
+        </div>
+    </t:summary>
+</j:jelly>

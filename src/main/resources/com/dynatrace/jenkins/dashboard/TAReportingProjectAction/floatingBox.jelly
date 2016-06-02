@@ -1,0 +1,12 @@
+<j:jelly xmlns:j="jelly:core">
+    <div style="width:500px; margin: 8px 0px;">
+        <div class="test-trend-caption">
+            <img class="dtLogoIcon" src="${resURL}/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png"/>
+            ${%side.panel.caption}
+        </div>
+
+        <a href="dynatrace-test-result-trend/">
+            <img class="trend" src="dynatrace-test-result-trend/summarizerGraph"/>
+        </a>
+    </div>
+</j:jelly>

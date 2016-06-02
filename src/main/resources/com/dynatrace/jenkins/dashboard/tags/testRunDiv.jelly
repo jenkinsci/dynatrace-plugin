@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+    <div>
+        <jm:expandableDivHeader headerClass="testRunDivHeader" iconName="arrow_black"
+            >${%test.run.header(testRun.category)}
+            <jm:testResultSummary report="${testRun}"/>
+        </jm:expandableDivHeader>
+        <div class="testRunDivBody" style="${h.ifThenElse(collapsed,'display:none','')}">
+            <p>
+                <b>${%test.run.id}</b> ${testRun.id}
+            </p>
+
+            <j:set var="testCategory" value="${testRun.category}" />
+
+            <j:set var="collapsed" value="${false}" />
+            <jm:testResultsDiv testResultsCount="${testRun.failedCount}" testResults="${testRun.failedTestResults}"
+                               divTitle="${%test.results.div.title.failed}" iconName="arrow_red"/>
+            <j:set var="collapsed" value="${testRun.failedCount > 0}" />
+            <jm:testResultsDiv testResultsCount="${testRun.degradedCount}" testResults="${testRun.degradedTestResults}"
+                               divTitle="${%test.results.div.title.degraded}" iconName="arrow_orange"/>
+            <j:set var="collapsed" value="${collapsed || testRun.degradedCount > 0}" />
+            <jm:testResultsDiv testResultsCount="${testRun.volatileCount}" testResults="${testRun.volatileTestResults}"
+                               divTitle="${%test.results.div.title.volatile}" iconName="arrow_yellow"/>
+            <j:set var="collapsed" value="${collapsed || testRun.volatileCount > 0}" />
+            <jm:testResultsDiv testResultsCount="${testRun.improvedCount}" testResults="${testRun.improvedTestResults}"
+                               divTitle="${%test.results.div.title.improved}" iconName="arrow_blue"/>
+            <j:set var="collapsed" value="${collapsed || testRun.improvedCount > 0}" />
+            <jm:testResultsDiv testResultsCount="${testRun.passedCount}" testResults="${testRun.passedTestResults}"
+                               divTitle="${%test.results.div.title.passed}" iconName="arrow_green"/>
+        </div>
+    </div>
+</j:jelly>

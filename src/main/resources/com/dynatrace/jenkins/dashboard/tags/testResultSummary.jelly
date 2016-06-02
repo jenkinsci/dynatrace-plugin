@@ -1,0 +1,4 @@
+<j:jelly xmlns:j="jelly:core">
+    (${%test.result.summary.template(report.passedCount, report.improvedCount,
+        report.volatileCount, report.degradedCount, report.failedCount)})
+</j:jelly>

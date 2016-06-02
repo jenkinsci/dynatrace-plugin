@@ -1,0 +1,17 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:block>
+    <p>
+      ${%message.build.environment.info}
+    </p>
+  </f:block>
+
+  <f:entry title="${%field.category.title}"
+             field="category">
+    <f:select default="${descriptor.defaultCategory}"/>
+  </f:entry>
+  <f:entry title="${%field.platform.title}" description="${%field.platform.description}">
+    <f:textbox field="platform" />
+  </f:entry>
+
+</j:jelly>

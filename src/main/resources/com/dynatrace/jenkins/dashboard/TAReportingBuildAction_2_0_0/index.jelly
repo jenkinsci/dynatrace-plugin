@@ -1,0 +1,53 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+	<j:set var="report" value="${it.currentReport}" />
+	<j:set var="previousReport" value="${it.previousReport}" />
+	<j:set var="reportDetails" value="${report.loadReportDetails()}" />
+	<j:if test="${reportDetails != null &amp;&amp; !reportDetails.isEmpty()}">
+		<j:set var="previousReportDetails" value="${previousReport.loadReportDetails()}" />
+	</j:if>
+
+	<l:layout title="${%build.view.page.title}" css="${JENKINS_CONTEXT_PATH}/plugin/dynatrace-dashboard/css/style.css">
+		<st:include it="${it.build}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/effects.js"/>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/scriptaculous.js"/>
+			<script type="text/javascript" src="${rootURL}/plugin/dynatrace-dashboard/js/expandableDivHeader.js"/>
+
+			<h1>
+				<img class="dtLogoIcon" src="${resURL}/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png"/>
+				${%build.view.caption}
+			</h1>
+
+			<j:set var="storedSessionURL" value="${it.storedSessionURL}" />
+			<div>
+				<j:if test="${storedSessionURL != null}">
+					<a href="${storedSessionURL}">${%build.view.export.stored.session.link}</a>
+				</j:if>
+			</div>
+
+			<div>
+
+				<!--   MESSAGES FOR testResultsTable.jelly TAG (DUE TO PERFORMANCE ISSUES IN OLD JENKINS VERSIONS)   -->
+				<j:set var="M_test.result.summary.timestamp" value="${%test.result.summary.timestamp}"/>
+				<j:set var="M_test.result.summary.platform" value="${%test.result.summary.platform}"/>
+				<j:set var="M_test.result.summary.status" value="${%test.result.summary.status}"/>
+				<j:set var="M_test.result.summary.previous.status" value="${%test.result.summary.previous.status}"/>
+
+				<j:set var="M_table.column.measure" value="${%table.column.measure}"/>
+				<j:set var="M_table.column.current.build" value="${%table.column.current.build}"/>
+				<j:set var="M_table.column.previous.build" value="${%table.column.previous.build}"/>
+				<j:set var="M_table.column.value" value="${%table.column.value}"/>
+				<j:set var="M_table.column.expected.min" value="${%table.column.expected.min}"/>
+				<j:set var="M_table.column.expected.max" value="${%table.column.expected.max}"/>
+				<j:set var="M_table.column.violation.percentage" value="${%table.column.violation.percentage}"/>
+				<!-- _______________________________________________________________________________________________ -->
+
+				<j:set var="collapsed" value="${false}" />
+				<j:forEach var="testRun" items="${reportDetails.testRuns}">
+					<jm:testRunDiv testRun="${testRun}"/>
+					<j:set var="collapsed" value="${true}" />
+				</j:forEach>
+			</div>
+		</l:main-panel>
+	</l:layout>
+</j:jelly>
