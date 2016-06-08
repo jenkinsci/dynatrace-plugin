@@ -23,7 +23,9 @@ Download Latest Release: https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/r
     * [Option 2: Test Run Registration from Maven](#maven2)
  * [Ant](#ant)
     * [Option 1: Test Run Registration from Jenkins](#ant1)
-    * [Option 2: Test Run Registration from Maven](#ant2)
+    * [Option 2: Test Run Registration from Ant](#ant2)
+ *  [NAnt](#ant)
+    * [Option 1: Test Run Registration from Jenkins](#nant1)
 * [Problems? Questions? Suggestions?](#feedback)
 * [Additional Resources](#resources)
   * [Dynatrace AppMon Documentation](#doc)
@@ -351,6 +353,19 @@ Download and install the Dynatrace Ant Library as described here: https://commun
 </batchtest> 
 </junit> 
 ```
+
+<a name="nant"/>
+### NAnt
+
+<a name="nant1"/>
+#### Option 1
+
+[Option 1: Test Run Registration from Jenkins](#option1)
+
+For the .net agent, the test run id must be passed through the environment variable DT_TESTRUN_ID (see also <a href="https://community.dynatrace.com/community/display/DOCDT63/.NET+Agent+Configuration" target="_blank">.NET Agent Configuration</a>). Using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin" target="_blank">EnvInject Plugin</a> in Jenkins you can inject the DT_TESTRUN_ID variable between the Register Test Run and the Execute Build steps.
+
+<img src="/img/conf/NAnt.png" />
+
 
 
 <a name="feedback"/>
