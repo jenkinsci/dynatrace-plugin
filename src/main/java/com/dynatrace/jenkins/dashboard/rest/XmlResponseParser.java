@@ -49,6 +49,8 @@ import org.w3c.dom.NodeList;
 public class XmlResponseParser {
 
 	private static final String TEST_MEASURE_UNIT_DEFAULT = "num";
+	private static final String TEST_MEASURE_DOUBLE_POSITIVE_INF = "INF";
+	private static final String TEST_MEASURE_DOUBLE_NEGATIVE_INF = "-INF";
 
 	public static TAReportDetails parseTestRunsDocument(Document document, PrintStream logger) {
 		logger.println("Parsing XML response...");
@@ -169,6 +171,23 @@ public class XmlResponseParser {
 		// Update KN: In DT 6.5+ shouldn't happen
 		String unit = unitNode == null ? TEST_MEASURE_UNIT_DEFAULT : unitNode.getNodeValue();
 
-		return new TestMeasure(name, metricGroup, expectedMin, expectedMax, value, unit, violationPercentage);
+		return new TestMeasure(name,
+				metricGroup,
+				doubleValueOf(expectedMin),
+				doubleValueOf(expectedMax),
+				doubleValueOf(value),
+				unit,
+				doubleValueOf(violationPercentage));
+	}
+
+	private static Double doubleValueOf(String s) throws NumberFormatException {
+		if (s == null) {
+			return null;
+		}else if (TEST_MEASURE_DOUBLE_POSITIVE_INF.equals(s)) {
+			return Double.POSITIVE_INFINITY;
+		}else if (TEST_MEASURE_DOUBLE_NEGATIVE_INF.equals(s)) {
+			return Double.NEGATIVE_INFINITY;
+		}
+		return Double.valueOf(s);
 	}
 }

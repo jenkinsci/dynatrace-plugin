@@ -49,15 +49,15 @@ public class TestMeasure implements Comparable<TestMeasure> {
 	private final String unit;
 	private final Double violationPercentage;
 
-	public TestMeasure(String name, String metricGroup, String expectedMin, String expectedMax,
-					   String value, String unit, String violationPercentage) {
+	public TestMeasure(String name, String metricGroup, Double expectedMin, Double expectedMax,
+					   Double value, String unit, Double violationPercentage) {
 		this.name = name;
 		this.metricGroup = metricGroup;
-		this.expectedMin = expectedMin == null ? null : Double.valueOf(expectedMin);
-		this.expectedMax = expectedMax == null ? null : Double.valueOf(expectedMax);
-		this.value = value == null ? null : Double.valueOf(value);
+		this.expectedMin = expectedMin;
+		this.expectedMax = expectedMax;
+		this.value = value;
 		this.unit = unit;
-		this.violationPercentage = violationPercentage == null ? null : Double.valueOf(violationPercentage);
+		this.violationPercentage = violationPercentage;
 	}
 
 	// Required by JAXB
