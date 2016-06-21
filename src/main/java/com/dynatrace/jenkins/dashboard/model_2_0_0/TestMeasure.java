@@ -79,24 +79,40 @@ public class TestMeasure implements Comparable<TestMeasure> {
 		return metricGroup;
 	}
 
-	public String getExpectedMin() {
-		return Utils.formatDouble(expectedMin);
-	}
-
-	public String getExpectedMax() {
-		return Utils.formatDouble(expectedMax);
-	}
-
-	public String getValue() {
-		return Utils.formatDouble(value);
-	}
-
 	public String getUnit() {
 		return unit;
 	}
 
-	public String getViolationPercentage() {
+	public String getFormattedExpectedMin() {
+		return Utils.formatDouble(expectedMin);
+	}
+
+	public String getFormattedExpectedMax() {
+		return Utils.formatDouble(expectedMax);
+	}
+
+	public String getFormattedValue() {
+		return Utils.formatDouble(value);
+	}
+
+	public String getFormattedViolationPercentage() {
 		return Utils.formatDoublePercentage(violationPercentage);
+	}
+
+	public Double getExpectedMin() {
+		return expectedMin;
+	}
+
+	public Double getExpectedMax() {
+		return expectedMax;
+	}
+
+	public Double getValue() {
+		return value;
+	}
+
+	public Double getViolationPercentage() {
+		return violationPercentage;
 	}
 
 	@Override

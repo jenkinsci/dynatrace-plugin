@@ -31,6 +31,8 @@ package com.dynatrace.jenkins.dashboard.rest;
 
 import java.io.PrintStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -180,14 +182,30 @@ public class XmlResponseParser {
 				doubleValueOf(violationPercentage));
 	}
 
-	private static Double doubleValueOf(String s) throws NumberFormatException {
+	/**
+	 * Returns a {@code Double} object holding the {@code double} value represented by the argument string {@code s}.
+	 * Supports also the special symbols {@link #TEST_MEASURE_DOUBLE_POSITIVE_INF} and {@link #TEST_MEASURE_DOUBLE_NEGATIVE_INF}.
+	 *
+	 * <p>If {@code s} is {@code null} or does not contain a parsable number, the return value is {@code null}.
+	 * <p>If {@code s} is equals {@link #TEST_MEASURE_DOUBLE_POSITIVE_INF}, the return value is {@link Double#POSITIVE_INFINITY}.
+	 * <p>If {@code s} is equals {@link #TEST_MEASURE_DOUBLE_NEGATIVE_INF}, the return value is {@link Double#NEGATIVE_INFINITY}.
+	 *
+	 * @param      s   the string to be parsed.
+	 * @return     a {@code Double} object holding the value represented by the {@code String} argument or {@code null}.
+	 */
+	private static Double doubleValueOf(String s) {
 		if (s == null) {
 			return null;
-		}else if (TEST_MEASURE_DOUBLE_POSITIVE_INF.equals(s)) {
+		} else if (TEST_MEASURE_DOUBLE_POSITIVE_INF.equals(s)) {
 			return Double.POSITIVE_INFINITY;
-		}else if (TEST_MEASURE_DOUBLE_NEGATIVE_INF.equals(s)) {
+		} else if (TEST_MEASURE_DOUBLE_NEGATIVE_INF.equals(s)) {
 			return Double.NEGATIVE_INFINITY;
 		}
-		return Double.valueOf(s);
+		try {
+			return Double.valueOf(s);
+		} catch (NumberFormatException e) {
+			Logger.getGlobal().log(Level.WARNING, "XmlResponseParser.doubleValueOf(): " + e.toString());
+			return null;
+		}
 	}
 }
