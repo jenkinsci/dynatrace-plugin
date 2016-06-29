@@ -36,6 +36,7 @@ import com.dynatrace.jenkins.dashboard.utils.UtilsCompat;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.Run;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
@@ -154,7 +155,7 @@ public class TAReportingProjectAction implements Action {
 		List<TAReport> reports = getExistingReportsList(MAX_BUILD_NUMBER_TO_SHOW_ON_CHART);
 		for (TAReport report : reports) {
 			Map<TestStatus, Integer> summary = report.getSummary();
-			summaries.put(new ChartUtil.NumberOnlyBuildLabel(report.getBuild()), summary);
+			summaries.put(new ChartUtil.NumberOnlyBuildLabel((Run<?, ?>) report.getBuild()), summary);
 		}
 
 		final Graph graph = new GraphImpl() {
