@@ -80,29 +80,6 @@ DAMAGE.
           <showWarnings>true</showWarnings>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>install-dynatrace-automation</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>${project.basedir}/lib/com.dynatrace.diagnostics.automation.jar</file>
-              <groupId>com.dynatrace</groupId>
-              <artifactId>test-automation-lib</artifactId>
-              <version>6.3</version>
-              <packaging>jar</packaging>
-              <createChecksum>true</createChecksum>
-              <generatePom>true</generatePom>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -148,6 +125,18 @@ DAMAGE.
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
     </repository>
+
+    <repository>
+      <id>local-repo</id>
+      <releases>
+          <enabled>true</enabled>
+          <checksumPolicy>ignore</checksumPolicy>
+      </releases>
+      <snapshots>
+          <enabled>false</enabled>
+      </snapshots>
+      <url>file://${project.basedir}/repo</url>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
@@ -155,5 +144,4 @@ DAMAGE.
       <url>http://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
-
 </project>
