@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:entry title="${%field.system.profile.title}" description="${%field.system.profile.description}">
+    <f:textbox field="systemProfile" />
+  </f:entry>
+
+  <f:validateButton
+          title="${%connection.test.title}" progress="${%connection.test.progress}"
+          method="testDynatraceConnection" with="systemProfile"/>
+
+  <f:entry title="${%field.version.major.title}" description="${%field.version.major.description}">
+    <f:textbox field="versionMajor" />
+  </f:entry>
+  <f:entry title="${%field.version.minor.title}" description="${%field.version.minor.description}">
+    <f:textbox field="versionMinor" />
+  </f:entry>
+  <f:entry title="${%field.version.revision.title}" description="${%field.version.revision.description}">
+    <f:textbox field="versionRevision" />
+  </f:entry>
+  <f:entry title="${%field.version.milestone.title}" description="${%field.version.milestone.description}">
+    <f:textbox field="versionMilestone" />
+  </f:entry>
+  <f:entry title="${%field.marker.title}" description="${%field.marker.description}">
+    <f:textbox field="marker" />
+  </f:entry>
+
+  <f:entry title="${%field.record.session.title}" description="${%field.record.session.description}">
+    <f:checkbox field="recordSession" default="${descriptor.defaultRecordSession}"/>
+  </f:entry>
+
+</j:jelly>

@@ -1,43 +1,65 @@
-table.source {
-    border-style: solid;
-    border-color: #bbb;
+table.TATable, table.TATable th, table.TATable td {
+    border: 1px solid #bbb;
     border-spacing: 0;
     border-collapse: collapse;
+}
+
+table.TATable {
     width: 100%;
 }
 
-table.source td {
-    text-align: center;
-    white-space: nowrap;
-}
-table.source td.left {
-    text-align: left;
-}
-table.source td.right {
-    text-align: right;
-}
-table.source a {
-	text-decoration: none;
+table#projectActionTable {
+    table-layout: fixed;
 }
 
-table.source th {
+table#projectActionTable th, table#projectActionTable td {
+    border: none;
+}
+
+table.TATable td {
+    text-align: center;
+}
+
+table.TATable td.measureName {
+    text-align: left;
+    font-weight: bold;
+}
+
+table#projectActionTable a {
+	text-decoration: none;
+    font-weight: bold;
+}
+
+table.TATable th {
     padding-left: 0.5em;
     font-weight: bold;
     background-color: #f0f0f0;
+}
+
+table.TATable td, table.TATable th {
     white-space: nowrap;
 }
 
-div.title {
-    background-color: #f0f0f0;
-    padding: 0px;
-    margin-top: 20px;
-}
-
 .light-red {
-	background-color: #EE6363;
+    background-color: #EE6363;
 }
 
-#test-accordion h2 {
-	border:1px solid;
+table.TATable tr:hover {
+    background-color: #f0f0f0;
+}
+
+table.TATable tr:hover .light-red {
+    background-color: #DF5454;
+}
+
+.testResultsDivHeader, .testRunDivHeader {
 	cursor: pointer;
+}
+
+.testResultsDivHeader > img, .testRunDivHeader > img {
+	margin-right: 5px;
+}
+
+.testRunDivBody {
+    margin-left: 2em;
 }

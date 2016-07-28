@@ -1,0 +1,16 @@
+<j:jelly xmlns:j="jelly:core">
+	<j:choose>
+		<j:when test="${it != null}">
+			<td>${it.getFormattedValue()}</td>
+			<td>${it.getFormattedExpectedMin()}</td>
+			<td>${it.getFormattedExpectedMax()}</td>
+			<td>${it.getFormattedViolationPercentage()}</td>
+		</j:when>
+		<j:otherwise>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</j:otherwise>
+	</j:choose>
+</j:jelly>

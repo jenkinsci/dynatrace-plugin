@@ -1,57 +1,44 @@
 /***************************************************
- * dynaTrace Jenkins Plugin
+ * Dynatrace Jenkins Plugin
 
- Copyright (c) 2008-2014, COMPUWARE CORPORATION
-All rights reserved.
+ Copyright (c) 2008-2016, DYNATRACE LLC
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name of the dynaTrace software nor the names of its contributors
-      may be used to endorse or promote products derived from this software without
-      specific prior written permission.
+ * Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ * Neither the name of the dynaTrace software nor the names of its contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGE.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ DAMAGE.
 
  * @date: 28.8.2013
  * @author: cwat-wgottesh
  */
 package com.dynatrace.jenkins.dashboard;
 
+import com.dynatrace.jenkins.dashboard.model.*;
 import hudson.model.AbstractBuild;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 
-import com.dynatrace.jenkins.dashboard.model.IPredicate;
-import com.dynatrace.jenkins.dashboard.model.TestCase;
-import com.dynatrace.jenkins.dashboard.model.TestCaseComparator;
-import com.dynatrace.jenkins.dashboard.model.TestCaseStatus;
-import com.dynatrace.jenkins.dashboard.model.TestMetric;
-import com.dynatrace.jenkins.dashboard.rest.DynaTraceServerRestConnection;
-import com.dynatrace.jenkins.dashboard.util.Predicate;
+import java.util.*;
 
+@Deprecated
 public class TestAutomationReport {
 	private String protocol;
 	private String host;
@@ -180,52 +167,33 @@ public class TestAutomationReport {
 	}
 	
 	public List<TestCase> getFailedTestCases() {
-		List<TestCase> result =  (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == TestCaseStatus.FAILED;
-			}
-		});
-		return result;
+		return getTestCases(TestCaseStatus.FAILED);
 	}
 	
 	public List<TestCase> getPassedTestCases() {
-		return (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == TestCaseStatus.PASSED;
-			}
-		});
+		return getTestCases(TestCaseStatus.PASSED);
 	}
 
 	public List<TestCase> getDegradedTestCases() {
-		return (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == TestCaseStatus.DEGRADED;
-			}
-		});
+		return getTestCases(TestCaseStatus.DEGRADED);
 	}
 	
 	public List<TestCase> getVolatileTestCases() {
-		return (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == TestCaseStatus.VOLATILE;
-			}
-		});
+		return getTestCases(TestCaseStatus.VOLATILE);
 	}
 	
 	public List<TestCase> getImprovedTestCases() {
-		return (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == TestCaseStatus.IMPROVED;
-			}
-		});
+		return getTestCases(TestCaseStatus.IMPROVED);
 	}
 	
 	public List<TestCase> getTestCases(final TestCaseStatus status) {
-		return (List<TestCase>) Predicate.filter(executedTestCases, new IPredicate<TestCase>() {
-			public boolean apply(TestCase tc) {
-				return tc.getStatus() == status;
+		List<TestCase> result = new ArrayList<TestCase>();
+		for (TestCase tc : executedTestCases) {
+			if (tc.getStatus() == status) {
+				result.add(tc);
 			}
-		});
+		}
+		return result;
 	}
 	
 }

@@ -1,0 +1,41 @@
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+	<h4>${testCase.testCaseName}</h4>
+	<p>
+		Timestamp: ${testCase.formattedTimestamp}<br/>
+		Platform: ${testCase.platform}<br/>
+		Previous status: ${testCase.prevStatus}
+	</p>
+
+	<table id="buildActionTable" class="TATable">
+		<thead>
+			<tr>
+				<th rowspan="2">Measure</th>
+				<th colspan="3">Current Build</th>
+				<j:if test="${previousReport!=null}">
+					<th colspan="3">Previous Build</th>
+				</j:if>
+			</tr>
+			<tr>
+				<th>Value</th>
+				<th>High</th>
+				<th>Last</th>
+				<j:if test="${previousReport!=null}">
+					<th>Value</th>
+					<th>High</th>
+					<th>Last</th>
+				</j:if>
+			</tr>
+		</thead>
+		<j:forEach var="metric" items="${testCase.testMetrics}">
+			<tr class="${h.ifThenElse(report.failed,'red','')}">
+				<td class="measureName">
+					${metric.getMetricgroup()} - ${metric.getMeasure()} (${metric.unit})
+				</td>
+				<jm:oldTestCaseTableRow it="${metric}" />
+				<j:if test="${previousReport!=null}">
+					<jm:oldTestCaseTableRow it="${previousReport.getMetric(metric.getMetricgroup(),metric.getMeasure())}" />
+				</j:if>
+			</tr>
+		</j:forEach>
+	</table>
+</j:jelly>

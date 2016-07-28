@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<testRuns>
+	<testRun category="unit" creationMode="MANUAL" marker="tunnelCalc" numDegraded="0" numFailed="0" numImproved="0" numInvalidated="0"
+	numPassed="2" numVolatile="1" platform="Win8.1-X64" startTime="1452269273631" systemProfile="easyTravel"
+	id="698522f9-c91b-4140-b325-12a51cd3c541" versionBuild="14" versionMajor="6" versionMilestone="Milestone 2016" versionMinor="3"
+	versionRevision="2016" href="http://localhost:8020/rest/management/profiles/easyTravel/testruns/698522f9-c91b-4140-b325-12a51cd3c541.xml">
+		<testResult exectime="1452269274462" name="Tunnel3Test.suspendLinearIncr2Test" package="tunnel.calculations1" status="passed">
+			<measure metricGroup="Error Detection1" name="Failed Transaction Count1" numDegradedRuns="0"
+			numFailingOrInvalidatedRuns="0" numImprovedRuns="0" numValidRuns="7" unit="num" value="0.0" violationPercentage="-INF"/>
+		</testResult>
+		<testResult exectime="1452269274459" name="Tunnel3Test.suspendSquareDecr2Test" status="volatile">
+			<measure expectedMax="2.0" expectedMin="0.0" metricGroup="Error Detection2" name="Failed Transaction Count2" numDegradedRuns="0"
+			numFailingOrInvalidatedRuns="0" numImprovedRuns="0" numValidRuns="7" unit="num" value="1.0" violationPercentage="0.0"/>
+		</testResult>
+		<testResult exectime="1452269274464" name="Tunnel3Test.suspendInverselyPropotional2Test" package="tunnel.calculations2" status="passed">
+			<measure expectedMax="0.0" expectedMin="0.0" metricGroup="Error Detection3" name="Failed Transaction Count3" numDegradedRuns="0"
+			numFailingOrInvalidatedRuns="0" numImprovedRuns="0" numValidRuns="7" unit="num" value="0.0" violationPercentage="INF"/>
+		</testResult>
+	</testRun>
+	<testRun category="performance" creationMode="MANUAL" marker="tunnelCalc" numDegraded="0" numFailed="0" numImproved="0" numInvalidated="0"
+	numPassed="1" numVolatile="0" startTime="1452269255178" systemProfile="easyTravel"
+	id="91b7994d-616c-464c-9fa2-a95eca9b9bed" versionBuild="13" versionMajor="6" versionMilestone="Milestone 2016" versionMinor="3"
+	versionRevision="2016" href="http://localhost:8020/rest/management/profiles/easyTravel/testruns/91b7994d-616c-464c-9fa2-a95eca9b9bed.xml">
+		<testResult exectime="1452269255995" platform="Win7" name="Tunnel3Test.suspendLinearIncr2Test" package="tunnel.calculations3" status="passed">
+			<measure expectedMax="0.0" expectedMin="0.0" metricGroup="Error Detection4" name="Failed Transaction Count4" numDegradedRuns="0"
+			numFailingOrInvalidatedRuns="0" numImprovedRuns="0" numValidRuns="6" unit="num" value="0.0" violationPercentage="0.0"/>
+		</testResult>
+	</testRun>
+</testRuns>

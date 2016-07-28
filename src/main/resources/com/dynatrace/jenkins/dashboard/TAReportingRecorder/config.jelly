@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+  <f:block>
+    <p>
+      ${%message.build.environment.info}
+    </p>
+  </f:block>
+
+  <f:optionalBlock title="${%field.modify.if.degraded.title}" field="modifyStatusIfDegraded" inline="true">
+    <f:radioBlock inline="true" help="${null}" name="statusNameIfDegraded" title="${%field.modify.if.degraded.unstable}"
+                  value="${descriptor.modifyBuildStatusUnstable}" checked="${instance.statusNameIfDegraded == descriptor.modifyBuildStatusUnstable || instance.statusNameIfDegraded == null}"/>
+    <f:radioBlock inline="true" help="${null}" name="statusNameIfDegraded" title="${%field.modify.if.degraded.failure}"
+                  value="${descriptor.modifyBuildStatusFailure}" checked="${instance.statusNameIfDegraded == descriptor.modifyBuildStatusFailure}"/>
+  </f:optionalBlock>
+
+  <f:optionalBlock title="${%field.modify.if.volatile.title}" field="modifyStatusIfVolatile" inline="true">
+    <f:radioBlock inline="true" help="${null}" name="statusNameIfVolatile" title="${%field.modify.if.volatile.unstable}"
+                  value="${descriptor.modifyBuildStatusUnstable}" checked="${instance.statusNameIfVolatile == descriptor.modifyBuildStatusUnstable || instance.statusNameIfVolatile == null}"/>
+    <f:radioBlock inline="true" help="${null}" name="statusNameIfVolatile" title="${%field.modify.if.volatile.failure}"
+                  value="${descriptor.modifyBuildStatusFailure}" checked="${instance.statusNameIfVolatile == descriptor.modifyBuildStatusFailure}"/>
+  </f:optionalBlock>
+
+  <f:block>
+    <p/>
+  </f:block>
+
+  <f:entry title="${%field.print.xml.for.debug.title}" description="${%field.print.xml.for.debug.description}">
+    <f:checkbox field="printXmlReportForDebug" default="${descriptor.defaultPrintXmlReportForDebug}"/>
+  </f:entry>
+
+</j:jelly>

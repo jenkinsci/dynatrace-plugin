@@ -1,0 +1,40 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="${%dynatrace.section.title}" name="dynatrace-test-automation">
+
+        <f:entry title="${%field.protocol.title}" description="${%field.protocol.description}"
+                 field="protocol">
+            <f:select default="${descriptor.defaultProtocol}"/>
+        </f:entry>
+
+        <f:entry title="${%field.host.title}" description="${%field.host.description}">
+            <f:textbox field="host" default="${descriptor.defaultHost}"/>
+        </f:entry>
+
+        <f:entry title="${%field.port.title}" description="${%field.port.description}">
+            <f:textbox field="port" default="${descriptor.defaultPort}"/>
+        </f:entry>
+
+        <f:entry title="${%field.username.title}" description="${%field.username.description}">
+            <f:textbox field="username" default="${descriptor.defaultUsername}"/>
+        </f:entry>
+
+        <f:entry title="${%field.password.title}" description="${%field.password.description}">
+            <f:password field="password"/>
+        </f:entry>
+
+        <f:validateButton
+                title="${%connection.test.title}" progress="${%connection.test.progress}"
+                method="testDynatraceConnection" with="protocol,host,port,username,password,systemProfile"/>
+
+        <f:advanced>
+            <f:entry title="${%field.delay.title}" description="${%field.delay.description}">
+                <f:textbox field="delay" default="${descriptor.defaultDelay}"/>
+            </f:entry>
+
+            <f:entry title="${%field.retry.count.title}" description="${%field.retry.count.description}">
+                <f:textbox field="retryCount" default="${descriptor.defaultRetryCount}"/>
+            </f:entry>
+        </f:advanced>
+
+    </f:section>
+</j:jelly>

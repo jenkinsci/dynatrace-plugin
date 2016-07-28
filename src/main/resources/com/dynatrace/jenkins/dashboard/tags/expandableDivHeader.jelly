@@ -1,0 +1,10 @@
+<j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define">
+	<j:set var="iconSrc" value="${resURL}/plugin/dynatrace-dashboard/images/${iconName}.png"/>
+	<j:set var="openIconSrc" value="${resURL}/plugin/dynatrace-dashboard/images/${iconName}_open.png"/>
+
+	<h2 class="${headerClass}" onclick="expandableDivHeaderOnClick(this)">
+		<img src="${h.ifThenElse(collapsed, iconSrc, openIconSrc)}"/>
+		<img src="${h.ifThenElse(!collapsed, iconSrc, openIconSrc)}" style="display:none;"/>
+		<d:invokeBody/>
+	</h2>
+</j:jelly>

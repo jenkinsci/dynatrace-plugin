@@ -1,0 +1,40 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
+	<l:layout title="${%project.view.page.title}" css="${JENKINS_CONTEXT_PATH}/plugin/dynatrace-dashboard/css/style.css">
+		<st:include it="${it.project}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<j:set var="reports" value="${it.getExistingReportsList()}" />
+			<h1>
+				<img class="dtLogoIcon" src="${resURL}/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png"/>
+				${%project.view.caption}
+			</h1>
+			<div>
+				<center>
+					<img class="trend" src="./summarizerGraph?width=730&amp;height=440" />
+				</center>
+
+				<br/>
+
+				<table id="projectActionTable" class="TATable">
+					<tr>
+						<th>${%table.column.build.number}</th>
+						<th>${%table.column.passed.number}</th>
+						<th>${%table.column.improved.number}</th>
+						<th>${%table.column.volatile.number}</th>
+						<th>${%table.column.degraded.number}</th>
+						<th>${%table.column.failed.number}</th>
+					</tr>
+					<j:forEach var="report" items="${reports}">
+						<tr>
+							<td><a href="../${report.getBuild().getNumber()}/dynatrace-test-result/">${report.getBuild().getNumber()}</a></td>
+							<td>${report.getPassedCount()}</td>
+							<td>${report.getImprovedCount()}</td>
+							<td>${report.getVolatileCount()}</td>
+							<td>${report.getDegradedCount()}</td>
+							<td class="${h.ifThenElse(report.failedCount > 0,'light-red','')}">${report.getFailedCount()}</td>
+						</tr>
+					</j:forEach>
+				</table>
+			</div>
+		</l:main-panel>
+	</l:layout>
+</j:jelly>

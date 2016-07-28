@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
+    <j:if test="${testResultsCount > 0}">
+        <div>
+            <jm:expandableDivHeader headerClass="testResultsDivHeader">
+                ${testResultsCount} ${divTitle}
+            </jm:expandableDivHeader>
+            <div style="${h.ifThenElse(collapsed,'display:none','')}">
+                <j:forEach var="testResult" items="${testResults}">
+                    <jm:testResultsTable/>
+                </j:forEach>
+            </div>
+        </div>
+    </j:if>
+</j:jelly>
