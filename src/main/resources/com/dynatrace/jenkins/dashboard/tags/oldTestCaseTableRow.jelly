@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
 	<td>${it.getValue()}</td>
 	<td>${it.getHigh()}</td>

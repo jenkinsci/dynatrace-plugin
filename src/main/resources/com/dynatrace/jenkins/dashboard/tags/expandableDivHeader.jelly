@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define">
 	<j:set var="iconSrc" value="${resURL}/plugin/dynatrace-dashboard/images/${iconName}.png"/>
 	<j:set var="openIconSrc" value="${resURL}/plugin/dynatrace-dashboard/images/${iconName}_open.png"/>

@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
 	<h4>${testCase.testCaseName}</h4>
 	<p>
