@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
 	<l:layout title="Dynatrace AppMon Test Result" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags"
 		css="${JENKINS_CONTEXT_PATH}/plugin/dynatrace-dashboard/css/style.css">

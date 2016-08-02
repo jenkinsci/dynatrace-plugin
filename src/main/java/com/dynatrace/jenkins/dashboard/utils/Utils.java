@@ -33,7 +33,10 @@ import com.dynatrace.jenkins.dashboard.TABuildSetupStatusAction;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.ParameterValue;
+import hudson.model.Result;
+import hudson.model.StringParameterValue;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -45,7 +48,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by krzysztof.necel on 2016-01-25.
@@ -110,19 +116,16 @@ public final class Utils {
 		return true;
 	}
 
-	public static void updateBuildVariables(AbstractBuild<?,?> build, List<ParameterValue> parameters) {
-		ParametersAction existingAction = build.getAction(ParametersAction.class);
-		final ParametersAction newAction;
+	public static void updateBuildVariables(AbstractBuild<?, ?> build, List<ParameterValue> parameters) {
+		DynatraceVariablesAction existingAction = build.getAction(DynatraceVariablesAction.class);
 		if (existingAction == null) {
-			newAction = new ParametersAction(parameters);
+			build.addAction(new DynatraceVariablesAction(parameters));
 		} else {
-			newAction = existingAction.createUpdated(parameters);
-			build.getActions().remove(existingAction);
+			build.replaceAction(existingAction.createUpdated(parameters));
 		}
-		build.addAction(newAction);
 	}
 
-	public static void updateBuildVariable(AbstractBuild<?,?> build, String key, String value) {
+	public static void updateBuildVariable(AbstractBuild<?, ?> build, String key, String value) {
 		updateBuildVariables(build, Collections.<ParameterValue>singletonList(new StringParameterValue(key, value)));
 	}
 }

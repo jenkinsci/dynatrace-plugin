@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
 	<j:set var="report" value="${it.currentReport}" />
 	<j:set var="previousReport" value="${it.previousReport}" />

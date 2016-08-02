@@ -5,7 +5,6 @@ import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
 import com.google.common.collect.Lists;
 import hudson.model.AbstractBuild;
 import hudson.model.ParameterValue;
-import hudson.model.ParametersAction;
 import hudson.model.StringParameterValue;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -76,7 +75,7 @@ public class UtilsTest {
 	@Test
 	public void updateBuildVariables_NoVariableBefore_Test() {
 		AbstractBuild build = mock(AbstractBuild.class);
-		when(build.getAction(ParametersAction.class)).thenReturn(null);
+		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(null);
 
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
 		parameters.add(new StringParameterValue("key1S", "value1"));
@@ -85,9 +84,9 @@ public class UtilsTest {
 
 		Utils.updateBuildVariables(build, parameters);
 
-		ArgumentCaptor<ParametersAction> argumentCaptor = ArgumentCaptor.forClass(ParametersAction.class);
+		ArgumentCaptor<DynatraceVariablesAction> argumentCaptor = ArgumentCaptor.forClass(DynatraceVariablesAction.class);
 		verify(build).addAction(argumentCaptor.capture());
-		ParametersAction updatedAction = argumentCaptor.getValue();
+		DynatraceVariablesAction updatedAction = argumentCaptor.getValue();
 		assertUpdateBuildVariables(updatedAction);
 	}
 
@@ -97,7 +96,7 @@ public class UtilsTest {
 		oldParameters.add(new StringParameterValue("key1S", "value1"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
-		when(build.getAction(ParametersAction.class)).thenReturn(new ParametersAction(oldParameters));
+		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
 		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
 		newParameters.add(new StringParameterValue("key2S", "value2"));
@@ -105,9 +104,9 @@ public class UtilsTest {
 
 		Utils.updateBuildVariables(build, newParameters);
 
-		ArgumentCaptor<ParametersAction> argumentCaptor = ArgumentCaptor.forClass(ParametersAction.class);
-		verify(build).addAction(argumentCaptor.capture());
-		ParametersAction updatedAction = argumentCaptor.getValue();
+		ArgumentCaptor<DynatraceVariablesAction> argumentCaptor = ArgumentCaptor.forClass(DynatraceVariablesAction.class);
+		verify(build).replaceAction(argumentCaptor.capture());
+		DynatraceVariablesAction updatedAction = argumentCaptor.getValue();
 		assertUpdateBuildVariables(updatedAction);
 	}
 
@@ -118,16 +117,16 @@ public class UtilsTest {
 		oldParameters.add(new StringParameterValue("key2S", "value2"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
-		when(build.getAction(ParametersAction.class)).thenReturn(new ParametersAction(oldParameters));
+		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
 		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
 		newParameters.add(new StringParameterValue("key3S", "value3"));
 
 		Utils.updateBuildVariables(build, newParameters);
 
-		ArgumentCaptor<ParametersAction> argumentCaptor = ArgumentCaptor.forClass(ParametersAction.class);
-		verify(build).addAction(argumentCaptor.capture());
-		ParametersAction updatedAction = argumentCaptor.getValue();
+		ArgumentCaptor<DynatraceVariablesAction> argumentCaptor = ArgumentCaptor.forClass(DynatraceVariablesAction.class);
+		verify(build).replaceAction(argumentCaptor.capture());
+		DynatraceVariablesAction updatedAction = argumentCaptor.getValue();
 		assertUpdateBuildVariables(updatedAction);
 	}
 
@@ -138,17 +137,17 @@ public class UtilsTest {
 		oldParameters.add(new StringParameterValue("key3S", "wrongValue3"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
-		when(build.getAction(ParametersAction.class)).thenReturn(new ParametersAction(oldParameters));
+		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
 		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
-		oldParameters.add(new StringParameterValue("key2S", "value2"));
+		newParameters.add(new StringParameterValue("key2S", "value2"));
 		newParameters.add(new StringParameterValue("key3S", "value3"));
 
 		Utils.updateBuildVariables(build, newParameters);
 
-		ArgumentCaptor<ParametersAction> argumentCaptor = ArgumentCaptor.forClass(ParametersAction.class);
-		verify(build).addAction(argumentCaptor.capture());
-		ParametersAction updatedAction = argumentCaptor.getValue();
+		ArgumentCaptor<DynatraceVariablesAction> argumentCaptor = ArgumentCaptor.forClass(DynatraceVariablesAction.class);
+		verify(build).replaceAction(argumentCaptor.capture());
+		DynatraceVariablesAction updatedAction = argumentCaptor.getValue();
 		assertUpdateBuildVariables(updatedAction);
 	}
 
@@ -159,18 +158,18 @@ public class UtilsTest {
 		oldParameters.add(new StringParameterValue("key3S", "value3"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
-		when(build.getAction(ParametersAction.class)).thenReturn(new ParametersAction(oldParameters));
+		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
 		Utils.updateBuildVariable(build, "key2S", "value2");
 
-		ArgumentCaptor<ParametersAction> argumentCaptor = ArgumentCaptor.forClass(ParametersAction.class);
-		verify(build).addAction(argumentCaptor.capture());
-		ParametersAction updatedAction = argumentCaptor.getValue();
+		ArgumentCaptor<DynatraceVariablesAction> argumentCaptor = ArgumentCaptor.forClass(DynatraceVariablesAction.class);
+		verify(build).replaceAction(argumentCaptor.capture());
+		DynatraceVariablesAction updatedAction = argumentCaptor.getValue();
 		assertUpdateBuildVariables(updatedAction);
 	}
 
-	private void assertUpdateBuildVariables(ParametersAction updatedAction) {
-		assertThat("ParametersAction cannot be null (was not modified?)", updatedAction, is(notNullValue()));
+	private void assertUpdateBuildVariables(DynatraceVariablesAction updatedAction) {
+		assertThat("DynatraceVariablesAction cannot be null (was not modified?)", updatedAction, is(notNullValue()));
 
 		List<ParameterValue> resultParameters = updatedAction.getParameters();
 		assertThat("Incorrect number of parameters", resultParameters, hasSize(3));
