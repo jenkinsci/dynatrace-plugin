@@ -62,8 +62,8 @@ public class TestRun {
 
 	// Required by JAXB
 	private TestRun() {
-		this.testResults = new ArrayList<TestResult>();
-		this.summary = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		this.testResults = new ArrayList<>();
+		this.summary = new EnumMap<>(TestStatus.class);
 		this.id = null;
 		this.category = null;
 	}

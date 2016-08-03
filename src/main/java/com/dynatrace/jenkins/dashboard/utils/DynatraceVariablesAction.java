@@ -9,7 +9,7 @@ import java.util.*;
 
 public class DynatraceVariablesAction extends ParametersAction {
 
-	private List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+	private List<ParameterValue> parameters = new ArrayList<>();
 
 	public DynatraceVariablesAction(Collection<? extends ParameterValue> parameters) {
 		this.parameters.addAll(parameters);
@@ -33,7 +33,7 @@ public class DynatraceVariablesAction extends ParametersAction {
 	@Nonnull
 	@Override
 	public DynatraceVariablesAction createUpdated(Collection<? extends ParameterValue> overrides) {
-		List<ParameterValue> newParams = new ArrayList<ParameterValue>(overrides);
+		List<ParameterValue> newParams = new ArrayList<>(overrides);
 
 		outer:
 		for (ParameterValue value : this.parameters) {

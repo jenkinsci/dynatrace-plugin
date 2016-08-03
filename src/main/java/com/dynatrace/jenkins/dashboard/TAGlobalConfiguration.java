@@ -29,8 +29,11 @@
  */
 package com.dynatrace.jenkins.dashboard;
 
-import com.dynatrace.jenkins.dashboard.rest.ServerRestConnection;
-import com.sun.jersey.api.client.ClientHandlerException;
+import com.dynatrace.sdk.server.BasicServerConfiguration;
+import com.dynatrace.sdk.server.DynatraceClient;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import hudson.Extension;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -44,9 +47,6 @@ import javax.net.ssl.SSLHandshakeException;
 
 import static java.net.HttpURLConnection.*;
 
-/**
- * Created by krzysztof.necel on 2016-02-10.
- */
 @Extension
 public class TAGlobalConfiguration extends GlobalConfiguration {
 
@@ -56,24 +56,19 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	private static final String DEFAULT_USERNAME = "admin";
 	private static final int DEFAULT_DELAY = 10; // seconds
 	private static final int DEFAULT_RETRY_COUNT = 3;
+	private static final boolean DEFAULT_VALIDATE_CERTS = true;
 
 	public String protocol;
 	public String host;
 	public Integer port;
 	public String username;
 	public String password;
-	public Integer delay;		// time to wait before trying to get data from the DT server in seconds
+	public Integer delay;        // time to wait before trying to get data from the DT server in seconds
 	public Integer retryCount;
+	public Boolean validateCerts;
 
 	public TAGlobalConfiguration() {
 		load(); // KN: load config from XML file on startup
-	}
-
-	@Override
-	public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-		req.bindJSON(this, json.getJSONObject("dynatrace-test-automation")); // KN: section name from config.jelly
-		save();
-		return true;
 	}
 
 	public static String getDefaultProtocol() {
@@ -98,6 +93,17 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 
 	public static int getDefaultRetryCount() {
 		return DEFAULT_RETRY_COUNT;
+	}
+
+	public static boolean getDefaultValidateCerts() {
+		return DEFAULT_VALIDATE_CERTS;
+	}
+
+	@Override
+	public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+		req.bindJSON(this, json.getJSONObject("dynatrace-test-automation")); // KN: section name from config.jelly
+		save();
+		return true;
 	}
 
 	public ListBoxModel doFillProtocolItems() {
@@ -141,7 +147,8 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 			if (i >= 0) {
 				return FormValidation.ok();
 			}
-		} catch (NumberFormatException e) { }
+		} catch (NumberFormatException e) {
+		}
 		return FormValidation.error(Messages.RECORDER_VALIDATION_DELAY_NAN());
 	}
 
@@ -151,7 +158,8 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 			if (i >= 0) {
 				return FormValidation.ok();
 			}
-		} catch (NumberFormatException e) { }
+		} catch (NumberFormatException e) {
+		}
 		return FormValidation.error(Messages.RECORDER_VALIDATION_RETRY_COUNT_NAN());
 	}
 
@@ -160,25 +168,33 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 			@QueryParameter("host") final String host,
 			@QueryParameter("port") final String port,
 			@QueryParameter("username") final String username,
+			@QueryParameter("validateCerts") final boolean validateCerts,
 			@QueryParameter("password") final String password) {
 
 		try {
-			final ServerRestConnection connection = new ServerRestConnection(protocol, host,
-					Integer.parseInt(port), username, password);
-			int status = connection.doGetSystemProfilesRequest().getStatus();
-			switch (status) {
-				case HTTP_OK:
-					return FormValidation.ok(Messages.RECORDER_VALIDATION_CONNECTION_OK());
-				case HTTP_UNAUTHORIZED:
-					return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
-				default:
-					return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_OTHER_CODE(status));
+			final SystemProfiles connection = new SystemProfiles(new DynatraceClient(new BasicServerConfiguration(username, password, protocol.startsWith("https"), host, Integer.parseInt(port), validateCerts, 10000)));
+			try {
+				connection.getSystemProfiles();
+			} catch (ServerConnectionException e) {
+				if (e.getCause() instanceof SSLHandshakeException) {
+					return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_CERT_EXCEPTION(e.getCause().getMessage()));
+				}
+				throw e;
+			} catch (ServerResponseException e) {
+				switch (e.getStatusCode()) {
+					case HTTP_UNAUTHORIZED:
+						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
+					case HTTP_FORBIDDEN:
+						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
+					case HTTP_NOT_FOUND:
+						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
+					default:
+						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_OTHER_CODE(e.getStatusCode()));
+				}
 			}
+			return FormValidation.ok(Messages.RECORDER_VALIDATION_CONNECTION_OK());
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (e instanceof ClientHandlerException && e.getCause() instanceof SSLHandshakeException) {
-				return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_CERT_EXCEPTION(e.toString()));
-			}
 			return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNKNOWN(e.toString()));
 		}
 	}

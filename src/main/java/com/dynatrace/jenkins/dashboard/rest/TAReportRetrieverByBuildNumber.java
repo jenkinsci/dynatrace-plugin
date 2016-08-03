@@ -30,16 +30,15 @@
 package com.dynatrace.jenkins.dashboard.rest;
 
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
-import com.sun.jersey.api.client.ClientResponse;
-import org.w3c.dom.Document;
+import com.dynatrace.jenkins.dashboard.utils.UtilsCompat;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.testautomation.models.FetchTestRunsRequest;
+import com.dynatrace.sdk.server.testautomation.models.TestRuns;
 
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 
-/**
- * Created by krzysztof.necel on 2016-04-18.
- */
 public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 
 	private final int buildNumber;
@@ -49,7 +48,7 @@ public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 		this.buildNumber = buildNumber;
 	}
 
-	public TAReportDetails fetchReport() throws InterruptedException, URISyntaxException, NoSuchElementException {
+	public TAReportDetails fetchReport() throws ServerConnectionException, ServerResponseException, InterruptedException, NoSuchElementException {
 		for (currentTry = 0; currentTry <= retryCount; ++currentTry) {
 			waitForDelay(); // BEFORE we actually try to fetch the data from the server - wait for the configured delay
 
@@ -66,10 +65,11 @@ public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 		throw new NoSuchElementException("No matching test run with test executions has been recorded by the configured Dynatrace Server");
 	}
 
-	private TAReportDetails fetchReportOnce() throws URISyntaxException {
+	private TAReportDetails fetchReportOnce() throws ServerConnectionException, ServerResponseException {
 		logger.println("Connecting to Dynatrace Server REST interface...");
-		final ClientResponse response = connection.doGetTestRunsByBuildNumberRequest(systemProfile, buildNumber);
-		final Document xmlDocument = extractXmlDocument(response);
-		return XmlResponseParser.parseTestRunsDocument(xmlDocument, logger);
+		FetchTestRunsRequest request = new FetchTestRunsRequest();
+		request.setVersionBuildFilter(String.valueOf(buildNumber));
+		TestRuns tr = connection.fetchTestRuns(request);
+		return UtilsCompat.convertTestRuns(tr);
 	}
 }

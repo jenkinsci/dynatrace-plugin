@@ -30,32 +30,25 @@
 package com.dynatrace.jenkins.dashboard.utils;
 
 import com.dynatrace.jenkins.dashboard.TABuildSetupStatusAction;
+import com.dynatrace.jenkins.dashboard.TAGlobalConfiguration;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
+import com.dynatrace.sdk.server.BasicServerConfiguration;
+import com.dynatrace.sdk.server.DynatraceClient;
 import hudson.model.AbstractBuild;
 import hudson.model.ParameterValue;
 import hudson.model.Result;
 import hudson.model.StringParameterValue;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import jenkins.model.GlobalConfiguration;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by krzysztof.necel on 2016-01-25.
- */
 public final class Utils {
 
 	public static final String DYNATRACE_ICON_24_X_24_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png";
@@ -67,24 +60,15 @@ public final class Utils {
 	private Utils() {
 	}
 
-	public static Document stringToXmlDocument(String xmlContent) {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document xmlDocument = builder.parse(new InputSource(new StringReader(xmlContent)));
-			return xmlDocument;
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	public static DynatraceClient createClient() {
+		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
+		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username, globalConfig.password, globalConfig.protocol.startsWith("https"), globalConfig.host, globalConfig.port, globalConfig.validateCerts, 10000);
+		return new DynatraceClient(config);
 	}
 
 	public static Map<TestStatus, Integer> createReportAggregatedSummary(TAReportDetails reportDetails) {
 		// just sum all the reports for test runs
-		final Map<TestStatus, Integer> summary = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		final Map<TestStatus, Integer> summary = new EnumMap<>(TestStatus.class);
 		for (TestRun testRun : reportDetails.getTestRuns()) {
 			Map<TestStatus, Integer> testRunSummary = testRun.getSummary();
 			for (Map.Entry<TestStatus, Integer> entry : testRunSummary.entrySet()) {

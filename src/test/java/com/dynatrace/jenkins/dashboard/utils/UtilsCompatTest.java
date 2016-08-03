@@ -24,7 +24,7 @@ public class UtilsCompatTest {
 
 	@Test
 	public void getCompatReportTest() {
-		Map<TestCaseStatus, Integer> oldSummary = new TreeMap<TestCaseStatus, Integer>();
+		Map<TestCaseStatus, Integer> oldSummary = new TreeMap<>();
 
 		oldSummary.put(TestCaseStatus.FAILED, 1);
 		oldSummary.put(TestCaseStatus.DEGRADED, 2);

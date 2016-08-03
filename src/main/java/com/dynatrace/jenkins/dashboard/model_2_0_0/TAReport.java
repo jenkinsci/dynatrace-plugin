@@ -91,7 +91,7 @@ public class TAReport {
 		if (reportDetails == null) {
 			try {
 				reportDetails = TAReportDetailsFileUtils.loadReportDetails(build);
-				reportDetailsRef = new SoftReference<TAReportDetails>(reportDetails);
+				reportDetailsRef = new SoftReference<>(reportDetails);
 			} catch (JAXBException e) {
 				e.printStackTrace();
 			}

@@ -78,8 +78,8 @@ DAMAGE.
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <showWarnings>true</showWarnings>
         </configuration>
       </plugin>
@@ -98,9 +98,9 @@ DAMAGE.
       <version>2.1</version>
     </dependency>
     <dependency>
-      <groupId>com.dynatrace</groupId>
-      <artifactId>test-automation-lib</artifactId>
-      <version>6.3</version>
+      <groupId>com.dynatrace.sdk</groupId>
+      <artifactId>server-rest-sdk</artifactId>
+      <version>0.0.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
