@@ -30,7 +30,7 @@
 package com.dynatrace.jenkins.dashboard.rest;
 
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
-import com.dynatrace.jenkins.dashboard.utils.UtilsCompat;
+import com.dynatrace.jenkins.dashboard.utils.Utils;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 import com.dynatrace.sdk.server.testautomation.models.FetchTestRunsRequest;
@@ -70,6 +70,6 @@ public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 		FetchTestRunsRequest request = new FetchTestRunsRequest();
 		request.setVersionBuildFilter(String.valueOf(buildNumber));
 		TestRuns tr = connection.fetchTestRuns(request);
-		return UtilsCompat.convertTestRuns(tr);
+		return Utils.convertTestRuns(tr);
 	}
 }

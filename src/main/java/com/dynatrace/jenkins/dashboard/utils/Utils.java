@@ -31,11 +31,10 @@ package com.dynatrace.jenkins.dashboard.utils;
 
 import com.dynatrace.jenkins.dashboard.TABuildSetupStatusAction;
 import com.dynatrace.jenkins.dashboard.TAGlobalConfiguration;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
+import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
+import com.dynatrace.sdk.server.testautomation.models.TestRuns;
 import hudson.model.AbstractBuild;
 import hudson.model.ParameterValue;
 import hudson.model.Result;
@@ -44,10 +43,7 @@ import jenkins.model.GlobalConfiguration;
 
 import java.io.PrintStream;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class Utils {
 
@@ -65,6 +61,67 @@ public final class Utils {
 		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username, globalConfig.password, globalConfig.protocol.startsWith("https"), globalConfig.host, globalConfig.port, globalConfig.validateCerts, 10000);
 		return new DynatraceClient(config);
 	}
+
+	public static TAReportDetails convertTestRuns(TestRuns sdkTestRuns) {
+		ArrayList<TestRun> testRuns = new ArrayList<>();
+		if (sdkTestRuns != null) {
+			for (com.dynatrace.sdk.server.testautomation.models.TestRun tr : sdkTestRuns.getTestRuns()) {
+				testRuns.add(convertTestRun(tr));
+			}
+		}
+		return new TAReportDetails(testRuns);
+	}
+
+	public static TestRun convertTestRun(com.dynatrace.sdk.server.testautomation.models.TestRun sdkTestRun) {
+		List<TestResult> testResults = new ArrayList<>();
+		for (com.dynatrace.sdk.server.testautomation.models.TestResult sdkResult : sdkTestRun.getTestResults()) {
+			testResults.add(convertTestResult(sdkResult));
+		}
+		Map<TestStatus, Integer> testRunSummary = new EnumMap<>(TestStatus.class);
+		testRunSummary.put(TestStatus.FAILED, sdkTestRun.getFailedCount());
+		testRunSummary.put(TestStatus.DEGRADED, sdkTestRun.getDegradedCount());
+		testRunSummary.put(TestStatus.VOLATILE, sdkTestRun.getVolatileCount());
+		testRunSummary.put(TestStatus.IMPROVED, sdkTestRun.getImprovedCount());
+		testRunSummary.put(TestStatus.PASSED, sdkTestRun.getPassedCount());
+		return new TestRun(testResults, testRunSummary, sdkTestRun.getId(), convertTestCategory(sdkTestRun.getCategory()));
+	}
+
+	public static TestResult convertTestResult(com.dynatrace.sdk.server.testautomation.models.TestResult sdkTestResult) {
+		Set<TestMeasure> measures = new HashSet<>();
+		for (com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkMeasure : sdkTestResult.getMeasures()) {
+			measures.add(convertTestMeasure(sdkMeasure));
+		}
+		return new TestResult(new Date(sdkTestResult.getExecutionTime()), sdkTestResult.getName(), sdkTestResult.getPackageName(), sdkTestResult.getPlatform(), convertTestStatus(sdkTestResult.getStatus()), measures);
+	}
+
+	public static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
+		return new TestMeasure(sdkTestMeasure.getName(),
+				sdkTestMeasure.getMetricGroup(),
+				sdkTestMeasure.getExpectedMin(),
+				sdkTestMeasure.getExpectedMax(),
+				sdkTestMeasure.getValue(),
+				sdkTestMeasure.getUnit(),
+				sdkTestMeasure.getViolationPercentage());
+	}
+
+	public static TestCategory convertTestCategory(com.dynatrace.sdk.server.testautomation.models.TestCategory sdkTestCategory) {
+		switch (sdkTestCategory) {
+			case UNIT:
+				return TestCategory.UNIT;
+			case UI_DRIVEN:
+				return TestCategory.UI_DRIVEN;
+			case WEB_API:
+				return TestCategory.WEB_API;
+			case PERFORMANCE:
+				return TestCategory.PERFORMANCE;
+		}
+		throw new IllegalArgumentException("Could not convert TestCategory");
+	}
+
+	public static TestStatus convertTestStatus(com.dynatrace.sdk.server.testautomation.models.TestStatus sdkTestStatus) {
+		return TestStatus.valueOf(sdkTestStatus.name());
+	}
+
 
 	public static Map<TestStatus, Integer> createReportAggregatedSummary(TAReportDetails reportDetails) {
 		// just sum all the reports for test runs

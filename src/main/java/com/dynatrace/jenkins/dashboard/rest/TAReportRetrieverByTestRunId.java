@@ -31,7 +31,7 @@ package com.dynatrace.jenkins.dashboard.rest;
 
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
-import com.dynatrace.jenkins.dashboard.utils.UtilsCompat;
+import com.dynatrace.jenkins.dashboard.utils.Utils;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
 import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 
@@ -70,6 +70,6 @@ public class TAReportRetrieverByTestRunId extends TAReportRetriever {
 
 	private TestRun fetchSingleTestRun(String testRunId) throws ServerConnectionException, ServerResponseException {
 		logger.println(String.format("Connecting to Dynatrace Server REST interface... (ID=%s)", testRunId));
-		return UtilsCompat.convertTestRun(connection.fetchTestRun(systemProfile, testRunId));
+		return Utils.convertTestRun(connection.fetchTestRun(systemProfile, testRunId));
 	}
 }
