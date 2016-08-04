@@ -46,7 +46,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public final class Utils {
-
+	public static final String TEST_MEASURE_UNIT_DEFAULT = "num";
 	public static final String DYNATRACE_ICON_24_X_24_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png";
 	public static final String DYNATRACE_ICON_48_X_48_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png";
 
@@ -95,12 +95,13 @@ public final class Utils {
 	}
 
 	public static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
+		String unit = sdkTestMeasure.getUnit() != null ? sdkTestMeasure.getUnit() : TEST_MEASURE_UNIT_DEFAULT;
 		return new TestMeasure(sdkTestMeasure.getName(),
 				sdkTestMeasure.getMetricGroup(),
 				sdkTestMeasure.getExpectedMin(),
 				sdkTestMeasure.getExpectedMax(),
 				sdkTestMeasure.getValue(),
-				sdkTestMeasure.getUnit(),
+				unit,
 				sdkTestMeasure.getViolationPercentage());
 	}
 
