@@ -201,7 +201,10 @@ public class TABuildWrapper extends BuildWrapper {
 			try {
 				final TestAutomation connection = new TestAutomation(Utils.createClient());
 				FetchTestRunsRequest request = new FetchTestRunsRequest(systemProfile);
+				//We set many constraints to ENSURE no or few testruns are returned as this is testing the connection only
 				request.setVersionBuildFilter("1024");
+				request.setVersionMajorFilter("1024");
+				request.setMaxBuilds(1);
 				try {
 					connection.fetchTestRuns(request);
 				} catch (ServerResponseException e) {
