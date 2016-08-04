@@ -39,6 +39,9 @@ import com.dynatrace.sdk.server.testautomation.models.TestRuns;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 
+/**
+ * Created by krzysztof.necel on 2016-04-18.
+ */
 public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 
 	private final int buildNumber;

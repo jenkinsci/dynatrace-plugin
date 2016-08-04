@@ -40,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Created by krzysztof.necel on 2016-04-18.
+ */
 public class TAReportRetrieverByTestRunId extends TAReportRetriever {
 
 	private final Collection<String> testRunIds;

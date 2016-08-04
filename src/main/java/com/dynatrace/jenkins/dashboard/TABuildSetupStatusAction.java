@@ -31,6 +31,9 @@ package com.dynatrace.jenkins.dashboard;
 
 import hudson.model.InvisibleAction;
 
+/**
+ * Created by cwpl-dglugla on 06.04.16.
+ */
 public class TABuildSetupStatusAction extends InvisibleAction {
 
 	private final boolean setupFailed;

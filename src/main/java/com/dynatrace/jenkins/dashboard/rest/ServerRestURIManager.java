@@ -32,6 +32,9 @@ package com.dynatrace.jenkins.dashboard.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Created by krzysztof.necel on 2016-03-16.
+ */
 public class ServerRestURIManager {
 
 	private static final String PATH_EXPORT_STORED_SESSION = "/rest/management/storedsessions/%s.dts";

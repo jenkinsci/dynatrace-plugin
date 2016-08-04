@@ -39,6 +39,9 @@ import jenkins.model.GlobalConfiguration;
 
 import java.io.PrintStream;
 
+/**
+ * Created by krzysztof.necel on 2016-04-18.
+ */
 public abstract class TAReportRetriever {
 
 	protected final String systemProfile;

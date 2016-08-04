@@ -38,6 +38,9 @@ import hudson.model.AbstractBuild;
 
 import java.util.*;
 
+/**
+ * Created by krzysztof.necel on 2016-02-05.
+ */
 @SuppressWarnings("deprecation")
 public final class UtilsCompat {
 
