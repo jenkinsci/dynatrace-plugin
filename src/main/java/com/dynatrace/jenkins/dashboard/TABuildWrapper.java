@@ -139,7 +139,9 @@ public class TABuildWrapper extends BuildWrapper {
 			 */
 			private String storeSession(final PrintStream logger) throws ServerResponseException, ServerConnectionException {
 				logger.println("Storing session via Dynatrace Server REST interface...");
-				return sessions.stopRecording(systemProfile);
+				String sessionName = sessions.stopRecording(systemProfile);
+				logger.println("Dynatrace session " + sessionName + " has been stored");
+				return sessionName;
 			}
 		};
 	}
