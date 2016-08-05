@@ -20,7 +20,7 @@
         </f:entry>
 
         <f:entry title="${%field.password.title}" description="${%field.password.description}">
-            <f:password field="password"/>
+            <f:password field="password" default="${descriptor.defaultPassword}"/>
         </f:entry>
 
         <f:advanced>

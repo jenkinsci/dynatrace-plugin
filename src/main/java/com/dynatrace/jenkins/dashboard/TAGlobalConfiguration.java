@@ -57,18 +57,19 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	private static final String DEFAULT_HOST = "localhost";
 	private static final int DEFAULT_PORT = 8021;
 	private static final String DEFAULT_USERNAME = "admin";
+	private static final String DEFAULT_PASSWORD = "admin";
 	private static final int DEFAULT_DELAY = 10; // seconds
 	private static final int DEFAULT_RETRY_COUNT = 3;
 	private static final boolean DEFAULT_VALIDATE_CERTS = true;
 
-	public String protocol;
-	public String host;
-	public Integer port;
-	public String username;
-	public String password;
-	public Integer delay;        // time to wait before trying to get data from the DT server in seconds
-	public Integer retryCount;
-	public Boolean validateCerts;
+	public String protocol = getDefaultProtocol();
+	public String host = getDefaultHost();
+	public Integer port = getDefaultPort();
+	public String username = getDefaultUsername();
+	public String password = getDefaultPassword();
+	public Integer delay = getDefaultDelay();        // time to wait before trying to get data from the DT server in seconds
+	public Integer retryCount = getDefaultRetryCount();
+	public Boolean validateCerts = getDefaultValidateCerts();
 
 	public TAGlobalConfiguration() {
 		load(); // KN: load config from XML file on startup
@@ -89,6 +90,8 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	public static String getDefaultUsername() {
 		return DEFAULT_USERNAME;
 	}
+
+	public static String getDefaultPassword() { return DEFAULT_PASSWORD; }
 
 	public static int getDefaultDelay() {
 		return DEFAULT_DELAY;
