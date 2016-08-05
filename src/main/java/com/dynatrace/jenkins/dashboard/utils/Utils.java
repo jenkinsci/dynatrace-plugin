@@ -58,7 +58,14 @@ public final class Utils {
 
 	public static DynatraceClient createClient() {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
-		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username, globalConfig.password, globalConfig.protocol.startsWith("https"), globalConfig.host, globalConfig.port, globalConfig.validateCerts, 10000);
+		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
+				globalConfig.password,
+				globalConfig.protocol.startsWith("https"),
+				globalConfig.host,
+				globalConfig.port,
+				globalConfig.validateCerts,
+				//connection timeout, 0 stands for infinite
+				0);
 		return new DynatraceClient(config);
 	}
 

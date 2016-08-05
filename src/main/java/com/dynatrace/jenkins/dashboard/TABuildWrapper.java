@@ -137,17 +137,9 @@ public class TABuildWrapper extends BuildWrapper {
 			/**
 			 * @return stored session name
 			 */
-			private String storeSession(final PrintStream logger) {
+			private String storeSession(final PrintStream logger) throws ServerResponseException, ServerConnectionException {
 				logger.println("Storing session via Dynatrace Server REST interface...");
-				String sessionNameOut = null;
-				try {
-					sessionNameOut = sessions.stopRecording(systemProfile);
-					logger.println("Dynatrace session " + sessionNameOut + " has been stored");
-				} catch (ServerResponseException | ServerConnectionException e) {
-					e.printStackTrace();
-					logger.println("ERROR: Dynatrace AppMon Plugin - store session failed (see the stacktrace to get more information):\n" + e.toString());
-				}
-				return sessionNameOut;
+				return sessions.stopRecording(systemProfile);
 			}
 		};
 	}
