@@ -47,6 +47,9 @@ import javax.net.ssl.SSLHandshakeException;
 
 import static java.net.HttpURLConnection.*;
 
+/**
+ * Created by krzysztof.necel on 2016-02-10.
+ */
 @Extension
 public class TAGlobalConfiguration extends GlobalConfiguration {
 

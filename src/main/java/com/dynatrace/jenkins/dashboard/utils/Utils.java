@@ -45,6 +45,9 @@ import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.*;
 
+/**
+ * Created by krzysztof.necel on 2016-01-25.
+ */
 public final class Utils {
 	public static final String TEST_MEASURE_UNIT_DEFAULT = "num";
 	public static final String DYNATRACE_ICON_24_X_24_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png";
