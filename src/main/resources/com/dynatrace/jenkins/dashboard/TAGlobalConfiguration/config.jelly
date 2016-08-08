@@ -20,12 +20,8 @@
         </f:entry>
 
         <f:entry title="${%field.password.title}" description="${%field.password.description}">
-            <f:password field="password"/>
+            <f:password field="password" default="${descriptor.defaultPassword}"/>
         </f:entry>
-
-        <f:validateButton
-                title="${%connection.test.title}" progress="${%connection.test.progress}"
-                method="testDynatraceConnection" with="protocol,host,port,username,password,systemProfile"/>
 
         <f:advanced>
             <f:entry title="${%field.delay.title}" description="${%field.delay.description}">
@@ -35,7 +31,14 @@
             <f:entry title="${%field.retry.count.title}" description="${%field.retry.count.description}">
                 <f:textbox field="retryCount" default="${descriptor.defaultRetryCount}"/>
             </f:entry>
+
+            <f:entry title="${%field.validate.certs.title}" description="${%field.validate.certs.description}">
+                <f:checkbox field="validateCerts" default="${descriptor.defaultValidateCerts}"/>
+            </f:entry>
         </f:advanced>
 
+        <f:validateButton
+                title="${%connection.test.title}" progress="${%connection.test.progress}"
+                method="testDynatraceConnection" with="protocol,host,port,username,password,validateCerts,systemProfile"/>
     </f:section>
 </j:jelly>

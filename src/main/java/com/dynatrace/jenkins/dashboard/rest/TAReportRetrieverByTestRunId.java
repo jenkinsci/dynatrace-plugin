@@ -31,11 +31,11 @@ package com.dynatrace.jenkins.dashboard.rest;
 
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
-import com.sun.jersey.api.client.ClientResponse;
-import org.w3c.dom.Document;
+import com.dynatrace.jenkins.dashboard.utils.Utils;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
 
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,8 +52,8 @@ public class TAReportRetrieverByTestRunId extends TAReportRetriever {
 		this.testRunIds = testRunIds;
 	}
 
-	public TAReportDetails fetchReport() throws InterruptedException, URISyntaxException {
-		final List<TestRun> testRunsList = new ArrayList<TestRun>();
+	public TAReportDetails fetchReport() throws InterruptedException, ServerConnectionException, ServerResponseException {
+		final List<TestRun> testRunsList = new ArrayList<>();
 		waitForDelay(); // BEFORE we actually try to fetch the data from the server - wait for the configured delay
 
 		for (String testRunId : testRunIds) {
@@ -71,14 +71,8 @@ public class TAReportRetrieverByTestRunId extends TAReportRetriever {
 		return new TAReportDetails(testRunsList);
 	}
 
-	private TestRun fetchSingleTestRun(String testRunId) throws URISyntaxException {
+	private TestRun fetchSingleTestRun(String testRunId) throws ServerConnectionException, ServerResponseException {
 		logger.println(String.format("Connecting to Dynatrace Server REST interface... (ID=%s)", testRunId));
-		final ClientResponse response = connection.doGetTestRunByIdRequest(systemProfile, testRunId);
-		final Document xmlDocument = extractXmlDocument(response);
-		final TestRun testRun = XmlResponseParser.parseTestRunDocument(xmlDocument, logger);
-		if (testRun.isEmpty()) {
-			logger.println("The test run doesn't contain any test execution!");
-		}
-		return testRun;
+		return Utils.convertTestRun(connection.fetchTestRun(systemProfile, testRunId));
 	}
 }

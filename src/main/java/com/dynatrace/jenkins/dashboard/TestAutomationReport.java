@@ -187,7 +187,7 @@ public class TestAutomationReport {
 	}
 	
 	public List<TestCase> getTestCases(final TestCaseStatus status) {
-		List<TestCase> result = new ArrayList<TestCase>();
+		List<TestCase> result = new ArrayList<>();
 		for (TestCase tc : executedTestCases) {
 			if (tc.getStatus() == status) {
 				result.add(tc);

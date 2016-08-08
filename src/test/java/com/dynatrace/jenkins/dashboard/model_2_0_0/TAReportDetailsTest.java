@@ -7,7 +7,6 @@ import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by krzysztof.necel on 2016-06-20.
@@ -18,11 +17,11 @@ public class TAReportDetailsTest {
 	public void isEmpty_False_Test() throws Exception {
 		TestResult result1 = new TestResult(null, "testResult", null, "somePlatform1", TestStatus.PASSED, null);
 
-		EnumMap<TestStatus, Integer> summary1 = new EnumMap<TestStatus, Integer>(TestStatus.class);
-		EnumMap<TestStatus, Integer> summary2 = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		EnumMap<TestStatus, Integer> summary1 = new EnumMap<>(TestStatus.class);
+		EnumMap<TestStatus, Integer> summary2 = new EnumMap<>(TestStatus.class);
 		summary1.put(TestStatus.PASSED, 1);
 
-		List<TestRun> testRuns = new ArrayList<TestRun>();
+		List<TestRun> testRuns = new ArrayList<>();
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), summary2, "91b7994d-616c-464c-9fa2-a95eca9b9bed", TestCategory.PERFORMANCE));
 		testRuns.add(new TestRun(Lists.newArrayList(result1), summary1, "698522f9-c91b-4140-b325-12a51cd3c541", TestCategory.UNIT));
 
@@ -33,10 +32,10 @@ public class TAReportDetailsTest {
 
 	@Test
 	public void isEmpty_True_Test() throws Exception {
-		EnumMap<TestStatus, Integer> summary1 = new EnumMap<TestStatus, Integer>(TestStatus.class);
-		EnumMap<TestStatus, Integer> summary2 = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		EnumMap<TestStatus, Integer> summary1 = new EnumMap<>(TestStatus.class);
+		EnumMap<TestStatus, Integer> summary2 = new EnumMap<>(TestStatus.class);
 
-		List<TestRun> testRuns = new ArrayList<TestRun>();
+		List<TestRun> testRuns = new ArrayList<>();
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), summary2, "91b7994d-616c-464c-9fa2-a95eca9b9bed", TestCategory.PERFORMANCE));
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), summary1, "698522f9-c91b-4140-b325-12a51cd3c541", TestCategory.UNIT));
 
@@ -64,7 +63,7 @@ public class TAReportDetailsTest {
 		List<TestResult> testResults = Lists.newArrayList(result1, result2, result3, result4, result5, result6);
 		List<TestResult> testResultsBis = Lists.newArrayList(result1Bis, result2Bis, result3Bis, result4Bis, result5Bis, result6Bis);
 
-		List<TestRun> testRuns = new ArrayList<TestRun>();
+		List<TestRun> testRuns = new ArrayList<>();
 		testRuns.add(new TestRun(testResults, null, "91b7994d-616c-464c-9fa2-a95eca9b9bed", TestCategory.UNIT));
 		testRuns.add(new TestRun(testResultsBis, null, "698522f9-c91b-4140-b325-12a51cd3c541", TestCategory.PERFORMANCE));
 

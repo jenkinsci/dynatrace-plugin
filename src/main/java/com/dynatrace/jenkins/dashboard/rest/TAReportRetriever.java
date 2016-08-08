@@ -32,14 +32,12 @@ package com.dynatrace.jenkins.dashboard.rest;
 import com.dynatrace.jenkins.dashboard.TAGlobalConfiguration;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
-import com.sun.jersey.api.client.ClientResponse;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import jenkins.model.GlobalConfiguration;
-import org.w3c.dom.Document;
 
 import java.io.PrintStream;
-import java.net.URISyntaxException;
-
-import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
  * Created by krzysztof.necel on 2016-04-18.
@@ -48,12 +46,10 @@ public abstract class TAReportRetriever {
 
 	protected final String systemProfile;
 	protected final PrintStream logger;
-	private final boolean printXmlReportForDebug;
-
-	private final int delay;
 	protected final int retryCount;
-	protected final ServerRestConnection connection;
-
+	protected final TestAutomation connection;
+	private final boolean printXmlReportForDebug;
+	private final int delay;
 	protected int currentTry = 0;
 
 	protected TAReportRetriever(String systemProfile, PrintStream logger, boolean printXmlReportForDebug) {
@@ -65,11 +61,10 @@ public abstract class TAReportRetriever {
 
 		this.delay = globalConfig.delay;
 		this.retryCount = globalConfig.retryCount;
-		this.connection = new ServerRestConnection(globalConfig.protocol, globalConfig.host,
-				globalConfig.port, globalConfig.username, globalConfig.password);
+		this.connection = new TestAutomation(Utils.createClient());
 	}
 
-	public abstract TAReportDetails fetchReport() throws InterruptedException, URISyntaxException;
+	public abstract TAReportDetails fetchReport() throws InterruptedException, ServerConnectionException, ServerResponseException;
 
 	protected void waitForDelay() throws InterruptedException {
 		if (delay > 0) {
@@ -79,24 +74,6 @@ public abstract class TAReportRetriever {
 			}
 			logger.println(message);
 			Thread.sleep(delay * 1000);
-		}
-	}
-
-	protected Document extractXmlDocument(ClientResponse response) {
-		checkResponseStatus(response);
-		final String xmlContent = response.getEntity(String.class);
-		if (printXmlReportForDebug) {
-			logger.println("DEBUG: XML response from Dynatrace Server REST interface:\n" + xmlContent);
-		}
-
-		return Utils.stringToXmlDocument(xmlContent);
-	}
-
-	protected void checkResponseStatus(ClientResponse response) {
-		int status = response.getStatus();
-		logger.println("HTTP status code from Dynatrace Server: " + status);
-		if (status != HTTP_OK) {
-			throw new IllegalStateException("HTTP status code from Dynatrace Server was " + status + ". Expected " + HTTP_OK +".");
 		}
 	}
 }

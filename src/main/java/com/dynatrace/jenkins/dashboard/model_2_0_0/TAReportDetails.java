@@ -51,7 +51,7 @@ public class TAReportDetails {
 
 	// Required by JAXB
 	private TAReportDetails() {
-		this.testRuns = new ArrayList<TestRun>();
+		this.testRuns = new ArrayList<>();
 	}
 
 	public List<TestRun> getTestRuns() {

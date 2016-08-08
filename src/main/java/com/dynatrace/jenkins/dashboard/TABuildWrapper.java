@@ -29,10 +29,14 @@
  */
 package com.dynatrace.jenkins.dashboard;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
-import com.dynatrace.jenkins.dashboard.rest.ServerRestConnection;
 import com.dynatrace.jenkins.dashboard.utils.BuildVarKeys;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.sessions.Sessions;
+import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import com.dynatrace.sdk.server.testautomation.models.FetchTestRunsRequest;
 import com.sun.jersey.api.client.ClientHandlerException;
 import hudson.Extension;
 import hudson.Launcher;
@@ -88,18 +92,20 @@ public class TABuildWrapper extends BuildWrapper {
 
 	@Override
 	public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+		final Sessions sessions = new Sessions(Utils.createClient());
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		final PrintStream logger = listener.getLogger();
-
-		String serverUrl = null;
 		try {
-			serverUrl = new URI(globalConfig.protocol, null, globalConfig.host, globalConfig.port, null, null, null).toString();
+			String serverUrl = new URI(globalConfig.protocol, null, globalConfig.host, globalConfig.port, null, null, null).toString();
 
 			if (recordSession) {
 				logger.println("Starting session recording via Dynatrace Server REST interface...");
-				final RESTEndpoint restEndpoint = new RESTEndpoint(globalConfig.username, globalConfig.password, serverUrl);
-				final String sessionNameIn = String.format(RECORD_SESSION_NAME, systemProfile, build.getNumber());
-				final String sessionNameOut = restEndpoint.startRecording(systemProfile, sessionNameIn, null, null, false, false);
+
+
+				StartRecordingRequest request = new StartRecordingRequest(systemProfile);
+				request.setPresentableName(String.format(RECORD_SESSION_NAME, systemProfile, build.getNumber()));
+
+				final String sessionNameOut = sessions.startRecording(request);
 				logger.println("Dynatrace session " + sessionNameOut + " has been started");
 			}
 
@@ -110,7 +116,6 @@ public class TABuildWrapper extends BuildWrapper {
 			logger.println("ERROR: Dynatrace AppMon Plugin - build set up failed (see the stacktrace to get more information):\n" + e.toString());
 		}
 
-		final String finalServerUrl = serverUrl;
 		return new Environment() {
 
 			@Override
@@ -132,12 +137,11 @@ public class TABuildWrapper extends BuildWrapper {
 			/**
 			 * @return stored session name
 			 */
-			private String storeSession(final PrintStream logger) {
+			private String storeSession(final PrintStream logger) throws ServerResponseException, ServerConnectionException {
 				logger.println("Storing session via Dynatrace Server REST interface...");
-				final RESTEndpoint restEndpoint = new RESTEndpoint(globalConfig.username, globalConfig.password, finalServerUrl);
-				final String sessionNameOut = restEndpoint.stopRecording(systemProfile);
-				logger.println("Dynatrace session " + sessionNameOut + " has been stored");
-				return sessionNameOut;
+				String sessionName = sessions.stopRecording(systemProfile);
+				logger.println("Dynatrace session " + sessionName + " has been stored");
+				return sessionName;
 			}
 		};
 	}
@@ -145,18 +149,33 @@ public class TABuildWrapper extends BuildWrapper {
 	private void setupBuildVariables(AbstractBuild build, String serverUrl) {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>(10);
+		List<ParameterValue> parameters = new ArrayList<>(10);
 		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_SYSTEM_PROFILE, systemProfile));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MAJOR, versionMajor));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MINOR, versionMinor));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_REVISION, versionRevision));
+		if (StringUtils.isNotEmpty(versionMajor)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MAJOR, versionMajor));
+		}
+		if (StringUtils.isNotEmpty(versionMinor)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MINOR, versionMinor));
+		}
+		if (StringUtils.isNotEmpty(versionRevision)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_REVISION, versionRevision));
+		}
 		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_BUILD, Integer.toString(build.getNumber())));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MILESTONE, versionMilestone));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_MARKER, marker));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_SERVER_URL, serverUrl));
-		parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
-		parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
-
+		if (StringUtils.isNotEmpty(versionMilestone)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_VERSION_MILESTONE, versionMilestone));
+		}
+		if (StringUtils.isNotEmpty(marker)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_MARKER, marker));
+		}
+		if (StringUtils.isNotEmpty(serverUrl)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_SERVER_URL, serverUrl));
+		}
+		if (StringUtils.isNotEmpty(globalConfig.username)) {
+			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
+		}
+		if (StringUtils.isNotEmpty(globalConfig.password)) {
+			parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
+		}
 		Utils.updateBuildVariables(build, parameters);
 	}
 
@@ -164,6 +183,10 @@ public class TABuildWrapper extends BuildWrapper {
 	public static class DescriptorImpl extends BuildWrapperDescriptor {
 
 		private static final boolean DEFAULT_RECORD_SESSION = false;
+
+		public static boolean getDefaultRecordSession() {
+			return DEFAULT_RECORD_SESSION;
+		}
 
 		@Override
 		public String getDisplayName() {
@@ -175,10 +198,6 @@ public class TABuildWrapper extends BuildWrapper {
 			return true;
 		}
 
-		public static boolean getDefaultRecordSession() {
-			return DEFAULT_RECORD_SESSION;
-		}
-
 		public FormValidation doCheckSystemProfile(@QueryParameter final String systemProfile) {
 			if (StringUtils.isNotBlank(systemProfile)) {
 				return FormValidation.ok();
@@ -188,27 +207,31 @@ public class TABuildWrapper extends BuildWrapper {
 		}
 
 		public FormValidation doTestDynatraceConnection(@QueryParameter final String systemProfile) {
-			final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
-
 			try {
-				final ServerRestConnection connection = new ServerRestConnection(globalConfig.protocol,
-						globalConfig.host, globalConfig.port, globalConfig.username, globalConfig.password);
-				int status = connection.doGetTestConnectionWithSystemProfileRequest(systemProfile).getStatus();
-				switch (status) {
-					case HTTP_OK:
-						return FormValidation.ok(Messages.RECORDER_VALIDATION_CONNECTION_OK());
-					case HTTP_UNAUTHORIZED:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
-					case HTTP_FORBIDDEN:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
-					case HTTP_NOT_FOUND:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
-					default:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_OTHER_CODE(status));
+				final TestAutomation connection = new TestAutomation(Utils.createClient());
+				FetchTestRunsRequest request = new FetchTestRunsRequest(systemProfile);
+				//We set many constraints to ENSURE no or few testruns are returned as this is testing the connection only
+				request.setVersionBuildFilter("1024");
+				request.setVersionMajorFilter("1024");
+				request.setMaxBuilds(1);
+				try {
+					connection.fetchTestRuns(request);
+				} catch (ServerResponseException e) {
+					switch (e.getStatusCode()) {
+						case HTTP_UNAUTHORIZED:
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
+						case HTTP_FORBIDDEN:
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
+						case HTTP_NOT_FOUND:
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
+						default:
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_OTHER_CODE(e.getStatusCode()));
+					}
 				}
+				return FormValidation.ok(Messages.RECORDER_VALIDATION_CONNECTION_OK());
 			} catch (Exception e) {
 				e.printStackTrace();
-				if (e instanceof ClientHandlerException && e.getCause() instanceof SSLHandshakeException) {
+				if (e.getCause() instanceof ClientHandlerException && e.getCause().getCause() instanceof SSLHandshakeException) {
 					return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_CERT_EXCEPTION(e.toString()));
 				}
 				return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNKNOWN(e.toString()));

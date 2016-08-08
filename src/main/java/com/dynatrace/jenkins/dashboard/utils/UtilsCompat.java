@@ -32,12 +32,11 @@ package com.dynatrace.jenkins.dashboard.utils;
 import com.dynatrace.jenkins.dashboard.TestAutomationBuildAction;
 import com.dynatrace.jenkins.dashboard.TestAutomationReport;
 import com.dynatrace.jenkins.dashboard.model.TestCaseStatus;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReport;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
+import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
+import com.dynatrace.sdk.server.testautomation.models.TestRuns;
 import hudson.model.AbstractBuild;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by krzysztof.necel on 2016-02-05.
@@ -60,7 +59,7 @@ public final class UtilsCompat {
 		}
 
 		Map<TestCaseStatus, Integer> oldSummary = oldReport.getTestCaseSummary();
-		Map<TestStatus, Integer> newSummary = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		Map<TestStatus, Integer> newSummary = new EnumMap<>(TestStatus.class);
 
 		for (Map.Entry<TestCaseStatus, Integer> entry : oldSummary.entrySet()) {
 			TestStatus newStatus = convertStatus(entry.getKey());

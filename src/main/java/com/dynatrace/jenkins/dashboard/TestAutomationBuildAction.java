@@ -101,7 +101,7 @@ public class TestAutomationBuildAction implements Action, StaplerProxy {
 			logger.log(Level.SEVERE,
 					"Error creating new BuildActionResultsDisplay()", e);
 		}
-		this.buildActionResultsDisplay = new WeakReference<TestAutomationBuildActionResultsDisplay>(buildDisplay);
+		this.buildActionResultsDisplay = new WeakReference<>(buildDisplay);
 		return buildDisplay;
 	}
 

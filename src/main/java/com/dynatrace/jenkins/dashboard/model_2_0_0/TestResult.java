@@ -74,7 +74,7 @@ public class TestResult {
 		this.packageName = null;
 		this.platform = null;
 		this.status = null;
-		this.testMeasures = new TreeSet<TestMeasure>();
+		this.testMeasures = new TreeSet<>();
 	}
 
 	public String getTestName() {

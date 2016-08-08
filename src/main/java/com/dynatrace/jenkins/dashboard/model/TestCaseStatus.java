@@ -38,7 +38,7 @@ public enum TestCaseStatus {
 	
 	private String desc;
 	
-	private TestCaseStatus(String desc) {
+	TestCaseStatus(String desc) {
 		this.desc = desc;
 	}
 	

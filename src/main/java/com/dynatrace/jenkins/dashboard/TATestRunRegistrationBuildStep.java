@@ -29,10 +29,13 @@
  */
 package com.dynatrace.jenkins.dashboard;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestCategory;
 import com.dynatrace.jenkins.dashboard.utils.BuildVarKeys;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import com.dynatrace.sdk.server.testautomation.models.CreateTestRunRequest;
+import com.dynatrace.sdk.server.testautomation.models.TestCategory;
+import com.dynatrace.sdk.server.testautomation.models.TestMetaData;
+import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -71,7 +74,7 @@ public class TATestRunRegistrationBuildStep extends Builder {
 	}
 
 	@Override
-	public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 		final PrintStream logger = listener.getLogger();
 		if (!Utils.isValidBuild(build, logger, "test run won't be registered")) {
 			return true;
@@ -87,20 +90,27 @@ public class TATestRunRegistrationBuildStep extends Builder {
 			String versionBuild = Integer.toString(build.getNumber());
 			String versionMilestone = variables.get(BuildVarKeys.BUILD_VAR_KEY_VERSION_MILESTONE);
 			String marker = variables.get(BuildVarKeys.BUILD_VAR_KEY_MARKER);
-			String serverUrl = variables.get(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_SERVER_URL);
 
-			Map<String, String> additionalInformation = new HashMap<String, String>();
+			Map<String, String> additionalInformation = new HashMap<>();
 			additionalInformation.put("JENKINS_JOB", build.getUrl());
 
-			final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
-			final RESTEndpoint restEndpoint = new RESTEndpoint(globalConfig.username, globalConfig.password, serverUrl);
-			String testRunID = restEndpoint.startTest(systemProfile, versionMajor, versionMinor, versionRevision,
-					versionBuild, versionMilestone, marker, category, platform, null, additionalInformation);
+			final TestAutomation restEndpoint = new TestAutomation(Utils.createClient());
+			CreateTestRunRequest request = new CreateTestRunRequest(systemProfile, versionBuild);
+			request.setVersionMajor(versionMajor);
+			request.setVersionMinor(versionMinor);
+			request.setVersionRevision(versionRevision);
+			request.setVersionBuild(versionBuild);
+			request.setVersionMilestone(versionMilestone);
+			request.setCategory(TestCategory.fromInternal(category));
+			request.setPlatform(platform);
+			request.setMarker(marker);
+			request.setAdditionalMetaData(new TestMetaData(additionalInformation));
+			TestRun testRun = restEndpoint.createTestRun(request);
 
-			Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_TEST_RUN_ID, testRunID);
-			updateTestRunIdsAction(build, testRunID);
+			Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_TEST_RUN_ID, testRun.getId());
+			updateTestRunIdsAction(build, testRun.getId());
 
-			logger.println("Registered test run with ID=" + testRunID);
+			logger.println("Registered test run with ID=" + testRun.getId());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,7 +131,11 @@ public class TATestRunRegistrationBuildStep extends Builder {
 	@Extension
 	public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
-		private static final String DEFAULT_CATEGORY = TestCategory.UNIT.getId();
+		private static final String DEFAULT_CATEGORY = TestCategory.UNIT.getInternal();
+
+		public static String getDefaultCategory() {
+			return DEFAULT_CATEGORY;
+		}
 
 		@Override
 		public boolean isApplicable(Class aClass) {
@@ -133,14 +147,10 @@ public class TATestRunRegistrationBuildStep extends Builder {
 			return Messages.BUILD_STEP_DISPLAY_NAME();
 		}
 
-		public static String getDefaultCategory() {
-			return DEFAULT_CATEGORY;
-		}
-
 		public ListBoxModel doFillCategoryItems() {
 			ListBoxModel model = new ListBoxModel();
 			for (TestCategory category : TestCategory.values()) {
-				model.add(category.getId());
+				model.add(category.getInternal());
 			}
 			return model;
 		}

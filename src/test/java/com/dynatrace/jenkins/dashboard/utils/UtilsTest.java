@@ -8,13 +8,7 @@ import hudson.model.ParameterValue;
 import hudson.model.StringParameterValue;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -30,23 +24,6 @@ import static org.mockito.Mockito.*;
  * Created by krzysztof.necel on 2016-06-15.
  */
 public class UtilsTest {
-
-	@Test
-	public void stringToXmlDocumentTest() throws Exception {
-		XPath xpath = XPathFactory.newInstance().newXPath();
-		Document document = Utils.stringToXmlDocument(TestUtils.getSampleXmlString());
-
-		assertThat("Document must not be null", document, is(notNullValue()));
-
-		Node testRunsNode = document.getFirstChild();
-		assertThat("Incorrect name of the XML element", testRunsNode.getNodeName(), is("testRuns"));
-
-		NodeList testRunsList = (NodeList) xpath.compile("/*/testRun").evaluate(document, XPathConstants.NODESET);
-		assertThat("Incorrect number of testRun nodes", testRunsList.getLength(), is(2));
-
-		Node firstTestRun = testRunsList.item(0);
-		assertThat("Incorrect name of the XML element", firstTestRun.getNodeName(), is("testRun"));
-	}
 
 	@Test
 	public void formatDoubleTest() throws ParseException {
@@ -77,7 +54,7 @@ public class UtilsTest {
 		AbstractBuild build = mock(AbstractBuild.class);
 		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(null);
 
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> parameters = new ArrayList<>();
 		parameters.add(new StringParameterValue("key1S", "value1"));
 		parameters.add(new StringParameterValue("key2S", "value2"));
 		parameters.add(new StringParameterValue("key3S", "value3"));
@@ -92,13 +69,13 @@ public class UtilsTest {
 
 	@Test
 	public void updateBuildVariables_OneVariableBefore_Test() {
-		List<ParameterValue> oldParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> oldParameters = new ArrayList<>();
 		oldParameters.add(new StringParameterValue("key1S", "value1"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
 		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
-		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> newParameters = new ArrayList<>();
 		newParameters.add(new StringParameterValue("key2S", "value2"));
 		newParameters.add(new StringParameterValue("key3S", "value3"));
 
@@ -112,14 +89,14 @@ public class UtilsTest {
 
 	@Test
 	public void updateBuildVariables_TwoVariablesBefore_Test() {
-		List<ParameterValue> oldParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> oldParameters = new ArrayList<>();
 		oldParameters.add(new StringParameterValue("key1S", "value1"));
 		oldParameters.add(new StringParameterValue("key2S", "value2"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
 		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
-		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> newParameters = new ArrayList<>();
 		newParameters.add(new StringParameterValue("key3S", "value3"));
 
 		Utils.updateBuildVariables(build, newParameters);
@@ -132,14 +109,14 @@ public class UtilsTest {
 
 	@Test
 	public void updateBuildVariables_ConflictingVariablesBefore_Test() {
-		List<ParameterValue> oldParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> oldParameters = new ArrayList<>();
 		oldParameters.add(new StringParameterValue("key1S", "value1"));
 		oldParameters.add(new StringParameterValue("key3S", "wrongValue3"));
 
 		AbstractBuild build = mock(AbstractBuild.class);
 		when(build.getAction(DynatraceVariablesAction.class)).thenReturn(new DynatraceVariablesAction(oldParameters));
 
-		List<ParameterValue> newParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> newParameters = new ArrayList<>();
 		newParameters.add(new StringParameterValue("key2S", "value2"));
 		newParameters.add(new StringParameterValue("key3S", "value3"));
 
@@ -153,7 +130,7 @@ public class UtilsTest {
 
 	@Test
 	public void updateBuildVariableTest() {
-		List<ParameterValue> oldParameters = new ArrayList<ParameterValue>();
+		List<ParameterValue> oldParameters = new ArrayList<>();
 		oldParameters.add(new StringParameterValue("key1S", "value1"));
 		oldParameters.add(new StringParameterValue("key3S", "value3"));
 
@@ -189,7 +166,7 @@ public class UtilsTest {
 
 	@Test
 	public void createReportAggregatedSummaryTest() {
-		ArrayList<TestRun> testRuns = new ArrayList<TestRun>();
+		ArrayList<TestRun> testRuns = new ArrayList<>();
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), createSummary(3, 3, 3, 3, 1, 3), "", TestCategory.UNIT));
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), createSummary(2, 2, 2, 2, 1, 2), "", TestCategory.UNIT));
 		testRuns.add(new TestRun(Lists.<TestResult>newArrayList(), createSummary(1, 1, 1, 1, 1, 1), "", TestCategory.PERFORMANCE));
@@ -201,7 +178,7 @@ public class UtilsTest {
 
 	private EnumMap<TestStatus, Integer> createSummary(int nFailed, int nDegraded, int nVolatile,
 													   int nImproved, int nPassed, int nInvalidated) {
-		EnumMap<TestStatus, Integer> summary = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		EnumMap<TestStatus, Integer> summary = new EnumMap<>(TestStatus.class);
 
 		summary.put(TestStatus.FAILED, nFailed);
 		summary.put(TestStatus.DEGRADED, nDegraded);
