@@ -49,6 +49,11 @@ DAMAGE.
 
   <developers>
     <developer>
+      <id>dynatrace</id>
+      <name>Dynatrace Development Team</name>
+      <email>Jenkins.Plugin@dynatrace.com</email>
+    </developer>
+    <developer>
       <id>krzysztof.necel</id>
       <name>Krzysztof Necel</name>
       <email>krzysztof.necel@dynatrace.com</email>
