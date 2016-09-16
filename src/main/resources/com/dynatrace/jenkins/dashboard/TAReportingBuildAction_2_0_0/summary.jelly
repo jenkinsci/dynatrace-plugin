@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
     <t:summary icon="/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png">
         <div>

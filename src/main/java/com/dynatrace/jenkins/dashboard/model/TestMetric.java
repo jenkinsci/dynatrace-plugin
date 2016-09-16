@@ -102,12 +102,12 @@ public class TestMetric implements Comparable<TestMetric> {
 		this.timestamp = DATETIME_FORMAT.parseDateTime(timestamp).toDate();
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	public Date getTimestamp() {
 		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public String getFormattedTimestamp() {
@@ -127,9 +127,9 @@ public class TestMetric implements Comparable<TestMetric> {
 	public void setValue(String value) {
 		this.value = createStringWith2Dec(value);
 	}
-	
+
 	private String createStringWith2Dec(String v) {
-		if (v.indexOf(".") > -1) {
+		if (v.contains(".")) {
 			Double d = Double.parseDouble(v);
 			DecimalFormat df = new DecimalFormat("#.##");
 			return df.format(d);

@@ -30,20 +30,18 @@
 package com.dynatrace.jenkins.dashboard.utils;
 
 import com.dynatrace.jenkins.dashboard.TABuildSetupStatusAction;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReportDetails;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestRun;
-import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
-import hudson.model.*;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import com.dynatrace.jenkins.dashboard.TAGlobalConfiguration;
+import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
+import com.dynatrace.sdk.server.BasicServerConfiguration;
+import com.dynatrace.sdk.server.DynatraceClient;
+import com.dynatrace.sdk.server.testautomation.models.TestRuns;
+import hudson.model.AbstractBuild;
+import hudson.model.ParameterValue;
+import hudson.model.Result;
+import hudson.model.StringParameterValue;
+import jenkins.model.GlobalConfiguration;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -51,7 +49,7 @@ import java.util.*;
  * Created by krzysztof.necel on 2016-01-25.
  */
 public final class Utils {
-
+	public static final String TEST_MEASURE_UNIT_DEFAULT = "num";
 	public static final String DYNATRACE_ICON_24_X_24_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png";
 	public static final String DYNATRACE_ICON_48_X_48_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png";
 
@@ -61,24 +59,84 @@ public final class Utils {
 	private Utils() {
 	}
 
-	public static Document stringToXmlDocument(String xmlContent) {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document xmlDocument = builder.parse(new InputSource(new StringReader(xmlContent)));
-			return xmlDocument;
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	public static DynatraceClient createClient() {
+		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
+		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
+				globalConfig.password,
+				globalConfig.protocol.startsWith("https"),
+				globalConfig.host,
+				globalConfig.port,
+				globalConfig.validateCerts,
+				//connection timeout, 0 stands for infinite
+				0);
+		return new DynatraceClient(config);
 	}
+
+	public static TAReportDetails convertTestRuns(TestRuns sdkTestRuns) {
+		ArrayList<TestRun> testRuns = new ArrayList<>();
+		if (sdkTestRuns != null) {
+			for (com.dynatrace.sdk.server.testautomation.models.TestRun tr : sdkTestRuns.getTestRuns()) {
+				testRuns.add(convertTestRun(tr));
+			}
+		}
+		return new TAReportDetails(testRuns);
+	}
+
+	public static TestRun convertTestRun(com.dynatrace.sdk.server.testautomation.models.TestRun sdkTestRun) {
+		List<TestResult> testResults = new ArrayList<>();
+		for (com.dynatrace.sdk.server.testautomation.models.TestResult sdkResult : sdkTestRun.getTestResults()) {
+			testResults.add(convertTestResult(sdkResult));
+		}
+		Map<TestStatus, Integer> testRunSummary = new EnumMap<>(TestStatus.class);
+		testRunSummary.put(TestStatus.FAILED, sdkTestRun.getFailedCount());
+		testRunSummary.put(TestStatus.DEGRADED, sdkTestRun.getDegradedCount());
+		testRunSummary.put(TestStatus.VOLATILE, sdkTestRun.getVolatileCount());
+		testRunSummary.put(TestStatus.IMPROVED, sdkTestRun.getImprovedCount());
+		testRunSummary.put(TestStatus.PASSED, sdkTestRun.getPassedCount());
+		return new TestRun(testResults, testRunSummary, sdkTestRun.getId(), convertTestCategory(sdkTestRun.getCategory()));
+	}
+
+	public static TestResult convertTestResult(com.dynatrace.sdk.server.testautomation.models.TestResult sdkTestResult) {
+		Set<TestMeasure> measures = new HashSet<>();
+		for (com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkMeasure : sdkTestResult.getMeasures()) {
+			measures.add(convertTestMeasure(sdkMeasure));
+		}
+		return new TestResult(new Date(sdkTestResult.getExecutionTime()), sdkTestResult.getName(), sdkTestResult.getPackageName(), sdkTestResult.getPlatform(), convertTestStatus(sdkTestResult.getStatus()), measures);
+	}
+
+	public static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
+		String unit = sdkTestMeasure.getUnit() != null ? sdkTestMeasure.getUnit() : TEST_MEASURE_UNIT_DEFAULT;
+		return new TestMeasure(sdkTestMeasure.getName(),
+				sdkTestMeasure.getMetricGroup(),
+				sdkTestMeasure.getExpectedMin(),
+				sdkTestMeasure.getExpectedMax(),
+				sdkTestMeasure.getValue(),
+				unit,
+				sdkTestMeasure.getViolationPercentage());
+	}
+
+	public static TestCategory convertTestCategory(com.dynatrace.sdk.server.testautomation.models.TestCategory sdkTestCategory) {
+		switch (sdkTestCategory) {
+			case UNIT:
+				return TestCategory.UNIT;
+			case UI_DRIVEN:
+				return TestCategory.UI_DRIVEN;
+			case WEB_API:
+				return TestCategory.WEB_API;
+			case PERFORMANCE:
+				return TestCategory.PERFORMANCE;
+		}
+		throw new IllegalArgumentException("Could not convert TestCategory");
+	}
+
+	public static TestStatus convertTestStatus(com.dynatrace.sdk.server.testautomation.models.TestStatus sdkTestStatus) {
+		return TestStatus.valueOf(sdkTestStatus.name());
+	}
+
 
 	public static Map<TestStatus, Integer> createReportAggregatedSummary(TAReportDetails reportDetails) {
 		// just sum all the reports for test runs
-		final Map<TestStatus, Integer> summary = new EnumMap<TestStatus, Integer>(TestStatus.class);
+		final Map<TestStatus, Integer> summary = new EnumMap<>(TestStatus.class);
 		for (TestRun testRun : reportDetails.getTestRuns()) {
 			Map<TestStatus, Integer> testRunSummary = testRun.getSummary();
 			for (Map.Entry<TestStatus, Integer> entry : testRunSummary.entrySet()) {
@@ -110,19 +168,16 @@ public final class Utils {
 		return true;
 	}
 
-	public static void updateBuildVariables(AbstractBuild<?,?> build, List<ParameterValue> parameters) {
-		ParametersAction existingAction = build.getAction(ParametersAction.class);
-		final ParametersAction newAction;
+	public static void updateBuildVariables(AbstractBuild<?, ?> build, List<ParameterValue> parameters) {
+		DynatraceVariablesAction existingAction = build.getAction(DynatraceVariablesAction.class);
 		if (existingAction == null) {
-			newAction = new ParametersAction(parameters);
+			build.addAction(new DynatraceVariablesAction(parameters));
 		} else {
-			newAction = existingAction.createUpdated(parameters);
-			build.getActions().remove(existingAction);
+			build.replaceAction(existingAction.createUpdated(parameters));
 		}
-		build.addAction(newAction);
 	}
 
-	public static void updateBuildVariable(AbstractBuild<?,?> build, String key, String value) {
+	public static void updateBuildVariable(AbstractBuild<?, ?> build, String key, String value) {
 		updateBuildVariables(build, Collections.<ParameterValue>singletonList(new StringParameterValue(key, value)));
 	}
 }

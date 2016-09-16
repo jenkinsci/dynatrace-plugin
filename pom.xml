@@ -6,14 +6,14 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
-    * Neither the name of the dynaTrace software nor the names of its contributors
-      may be used to endorse or promote products derived from this software without
-      specific prior written permission.
+  * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+  * Neither the name of the dynaTrace software nor the names of its contributors
+    may be used to endorse or promote products derived from this software without
+    specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -31,11 +31,11 @@ DAMAGE.
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.579</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>2.8</version><!-- which version of Jenkins is this plugin built against? -->
   </parent>
 
   <artifactId>dynatrace-dashboard</artifactId>
-  <version>2.0.3</version>
+  <version>2.0.5-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <name>Dynatrace Application Monitoring Plugin</name>
@@ -45,9 +45,15 @@ DAMAGE.
     <connection>scm:git:ssh://github.com/jenkinsci/dynatrace-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/dynatrace-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/dynatrace-plugin</url>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
+    <developer>
+      <id>dynatrace</id>
+      <name>Dynatrace Development Team</name>
+      <email>Jenkins.Plugin@dynatrace.com</email>
+    </developer>
     <developer>
       <id>krzysztof.necel</id>
       <name>Krzysztof Necel</name>
@@ -62,21 +68,24 @@ DAMAGE.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jenkins.version>1.579</jenkins.version>
+    <findbugs.skip>true</findbugs.skip>
+    <argLine />
   </properties>
 
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven-clean-plugin.version}</version>
+        <version>3.0.0</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
+        <version>3.5.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <showWarnings>true</showWarnings>
         </configuration>
       </plugin>
@@ -95,11 +104,10 @@ DAMAGE.
       <version>2.1</version>
     </dependency>
     <dependency>
-      <groupId>com.dynatrace</groupId>
-      <artifactId>test-automation-lib</artifactId>
-      <version>6.3</version>
+      <groupId>com.dynatrace.sdk</groupId>
+      <artifactId>server-rest-sdk</artifactId>
+      <version>0.0.1</version>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -129,11 +137,11 @@ DAMAGE.
     <repository>
       <id>local-repo</id>
       <releases>
-          <enabled>true</enabled>
-          <checksumPolicy>ignore</checksumPolicy>
+        <enabled>true</enabled>
+        <checksumPolicy>ignore</checksumPolicy>
       </releases>
       <snapshots>
-          <enabled>false</enabled>
+        <enabled>false</enabled>
       </snapshots>
       <url>file://${project.basedir}/repo</url>
     </repository>

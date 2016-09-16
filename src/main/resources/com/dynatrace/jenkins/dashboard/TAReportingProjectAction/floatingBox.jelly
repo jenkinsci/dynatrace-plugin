@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
     <div style="width:500px; margin: 8px 0px;">
         <div class="test-trend-caption">

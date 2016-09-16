@@ -108,7 +108,7 @@ public class TestCase {
 
 	public void addTestMetric(TestMetric tm) {
 		if (testMetrics == null) {
-			testMetrics = new TreeSet<TestMetric>();
+			testMetrics = new TreeSet<>();
 		}
 		testMetrics.add(tm);
 	}

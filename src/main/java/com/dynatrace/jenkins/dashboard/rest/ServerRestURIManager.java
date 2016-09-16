@@ -37,13 +37,7 @@ import java.net.URISyntaxException;
  */
 public class ServerRestURIManager {
 
-	private static final String PATH_SYSTEM_PROFILES = "/rest/management/profiles";
-	private static final String PATH_TEST_RUNS_BY_BUILD_NUMBER = "/rest/management/profiles/%s/testruns.xml";
-	private static final String PATH_TEST_RUN_BY_ID = "/rest/management/profiles/%s/testruns/%s.xml";
 	private static final String PATH_EXPORT_STORED_SESSION = "/rest/management/storedsessions/%s.dts";
-
-	private static final String QUERY_TEST_RUNS_BY_BUILD_NUMBER = "startTime=0&extend=measures&versionBuild=";
-	private static final String QUERY_TEST_CONNECTION_WITH_SYSTEM_PROFILE = "startTime=0&extend=testRuns&versionRevision=1024&versionBuild=1024";
 
 	private final String protocol;
 	private final String host;
@@ -53,24 +47,6 @@ public class ServerRestURIManager {
 		this.protocol = protocol;
 		this.host = host;
 		this.port = port;
-	}
-
-	public URI getSystemProfilesRequestURI() throws URISyntaxException {
-		return new URI(protocol, null, host, port, PATH_SYSTEM_PROFILES, null, null);
-	}
-
-	public URI getTestConnectionWithSystemProfileRequestURI(final String systemProfileName) throws URISyntaxException {
-		return new URI(protocol, null, host, port, String.format(PATH_TEST_RUNS_BY_BUILD_NUMBER, systemProfileName),
-				QUERY_TEST_CONNECTION_WITH_SYSTEM_PROFILE, null);
-	}
-
-	public URI getTestRunsByBuildNumberRequestURI(final String systemProfileName, final int buildNumber) throws URISyntaxException {
-		return new URI(protocol, null, host, port, String.format(PATH_TEST_RUNS_BY_BUILD_NUMBER, systemProfileName),
-				QUERY_TEST_RUNS_BY_BUILD_NUMBER + buildNumber, null);
-	}
-
-	public URI getTestRunByIdRequestURI(final String systemProfileName, final String testRunId) throws URISyntaxException {
-		return new URI(protocol, null, host, port, String.format(PATH_TEST_RUN_BY_ID, systemProfileName, testRunId), null, null);
 	}
 
 	public URI getExportStoredSessionRequestURI(final String storedSessionName) throws URISyntaxException {

@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:t="/lib/hudson" xmlns:jm="/com/dynatrace/jenkins/dashboard/tags">
     <table style="margin-top: 1em; margin-left: 1em;">
         <j:set var="buildAction" value="${it.project.lastCompletedBuild.getAction(it.class.classLoader.loadClass('com.dynatrace.jenkins.dashboard.TAReportingBuildAction_2_0_0'))}"/>

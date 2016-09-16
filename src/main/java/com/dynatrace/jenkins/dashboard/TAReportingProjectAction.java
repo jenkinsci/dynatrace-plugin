@@ -150,7 +150,7 @@ public class TAReportingProjectAction implements Action {
 	 * Generates graph with the number of tests executed in each category for {@link #MAX_BUILD_NUMBER_TO_SHOW_ON_CHART} latest builds.
 	 */
 	public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
-		final Map<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>> summaries = new TreeMap<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>>();
+		final Map<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>> summaries = new TreeMap<>();
 
 		List<TAReport> reports = getExistingReportsList(MAX_BUILD_NUMBER_TO_SHOW_ON_CHART);
 		for (TAReport report : reports) {
@@ -163,7 +163,7 @@ public class TAReportingProjectAction implements Action {
 			@Override
 			protected CategoryDataset createDataSet() {
 				DataSetBuilder<TestStatus, ChartUtil.NumberOnlyBuildLabel> dataSetBuilder =
-						new DataSetBuilder<TestStatus, ChartUtil.NumberOnlyBuildLabel>();
+						new DataSetBuilder<>();
 
 				for (Map.Entry<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>> entry : summaries.entrySet()) {
 					ChartUtil.NumberOnlyBuildLabel label = entry.getKey();
@@ -188,7 +188,7 @@ public class TAReportingProjectAction implements Action {
 	}
 
 	private List<TAReport> getExistingReportsList(int limit) {
-		final List<TAReport> taReportList = new ArrayList<TAReport>();
+		final List<TAReport> taReportList = new ArrayList<>();
 
 		if (this.project == null) {
 			return taReportList;

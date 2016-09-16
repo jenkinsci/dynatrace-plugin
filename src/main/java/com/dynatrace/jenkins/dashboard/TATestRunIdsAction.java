@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class TATestRunIdsAction extends InvisibleAction {
 
-	private final List<String> testRunIds = new LinkedList<String>();
+	private final List<String> testRunIds = new LinkedList<>();
 
 	public List<String> getTestRunIds() {
 		return testRunIds;
