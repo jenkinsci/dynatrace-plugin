@@ -70,7 +70,7 @@ public class TAReportRetrieverByBuildNumber extends TAReportRetriever {
 
 	private TAReportDetails fetchReportOnce() throws ServerConnectionException, ServerResponseException {
 		logger.println("Connecting to Dynatrace Server REST interface...");
-		FetchTestRunsRequest request = new FetchTestRunsRequest();
+		FetchTestRunsRequest request = new FetchTestRunsRequest(systemProfile);
 		request.setVersionBuildFilter(String.valueOf(buildNumber));
 		TestRuns tr = connection.fetchTestRuns(request);
 		return Utils.convertTestRuns(tr);
