@@ -13,8 +13,8 @@ Special thanks to Wolfgang Gottesheim who contributed to the first version of th
 #### Table of Contents
 
 * [Installation](#installation)  
- * [Manual Installation](#manual)
- * [Using Jenkins Update Centre](#update)
+  * [Using Jenkins Update Centre](#update)
+  * [Manual Installation](#manual)
 * [Configuration](#configuration)
   * [Global Settings](#global)
   * [Build configuration](#build)
@@ -41,17 +41,21 @@ Special thanks to Wolfgang Gottesheim who contributed to the first version of th
 <a name="installation"/>
 ## Installation
 
-<a name="manual"/>
-### Manual Installation
-* in Jenkins, click on "Manage Jenkins" / "Manage Plugins"
-* click on the "Advanced" tab
-* upload the plugin (dynatrace-dashboard.hpi) in the section "Upload Plugin" 
-* restart Jenkins when the installation is complete
-
 <a name="update"/>
 ### Using Jenkins Update Centre 
 
-search for Dynatrace in the Update Centre and click on install.
+The recommended way of installing the plugin is by the Update Centre. Simply search for the "Dynatrace" keyword and install the plugin with a single click.
+
+<a name="manual"/>
+### Manual Installation
+
+This procedure is meant for developers who want to install locally built plugin version.
+
+* build the plugin from source using `mvn package` command
+* in Jenkins, go to "Manage Jenkins" / "Manage Plugins" page
+* switch to the "Advanced" tab
+* upload the built plugin package from `target/dynatrace-dashboard.hpi` path in the "Upload Plugin" section
+* restart Jenkins when the installation is complete
 
 <a name="configuration"/>
 ## Configuration
