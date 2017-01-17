@@ -13,7 +13,7 @@ Special thanks to Wolfgang Gottesheim who contributed to the first version of th
 #### Table of Contents
 
 * [Installation](#installation)  
-  * [Using Jenkins Update Centre](#update)
+  * [Using Jenkins Update Center](#update)
   * [Manual Installation](#manual)
 * [Configuration](#configuration)
   * [Global Settings](#global)
@@ -42,9 +42,9 @@ Special thanks to Wolfgang Gottesheim who contributed to the first version of th
 ## Installation
 
 <a name="update"/>
-### Using Jenkins Update Centre 
+### Using Jenkins Update Center 
 
-The recommended way of installing the plugin is by the Update Centre. Simply search for the "Dynatrace" keyword and install the plugin with a single click.
+The recommended way of installing the plugin is by the Update Center (plugin directory). Navigate to "Manage Jenkins" / "Manage Plugins" page and switch to the "Available" tab. Search for the "Dynatrace" keyword and install the plugin.
 
 <a name="manual"/>
 ### Manual Installation
