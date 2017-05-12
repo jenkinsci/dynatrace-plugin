@@ -91,7 +91,7 @@ The testrun id is available as environment variable which can be passed to the D
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
-#### <a name="option2"/> Option 2: Test Run Registration from Maven/Ant/...
+#### <a name="option2"/> Option 2: Test Run Registration from Maven/Ant/Gradle/...
 
 Use this option when:
 * you don't mind using an additional plug-in in your Ant/Maven scripts
@@ -117,7 +117,7 @@ At the end of the build, add the Dynatrace AppMon **post-build action** to retri
 
 [Option 1: Test Run Registration from Jenkins](#option1)
 
-in this case, the Test Run Id will be passed from Jenkins to your Ant script as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
+in this case, the Test Run Id will be passed from Jenkins to your Maven build script (`pom.xml`) as an environment variable. You just need to make sure that the **Java agent is injected and that the test run id ${dtTestrunID} is passed to the agent**.
 
 **Example with Surefire**:
 
@@ -166,9 +166,9 @@ in this case, the Test Run Id will be passed from Jenkins to your Ant script as 
 
 #### <a name="maven2"/> Option 2
 
-In this case, the test run registration is done directly from Maven - enabling you to re-use Maven version information and meta-data.
+In this case, the test run registration is done directly from Maven - enabling you to re-use version information and meta-data defined in the `pom.xml` file.
 
-Download and install the Dynatrace Maven Plug-in as described here: https://community.dynatrace.com/community/display/DL/Dynatrace+Test+Automation+and+Maven
+Download and install the Dynatrace Maven Plug-in as described here: https://github.com/Dynatrace/Dynatrace-Maven-Plugin
 
 **Add the Dynatrace Automation Plug-in in your dependency list**:
 ```xml
@@ -296,9 +296,9 @@ in this case, the Test Run Id will be passed from Jenkins to your Ant script as 
 
 #### <a name="ant2"/> Option 2
 
-In this case, the test run registration is done directly from Maven - enabling you to re-use Maven version information and meta-data.
+In this case, the test run registration is done directly from Ant - enabling you to re-use version information and meta-data given in the Ant script.
 
-Download and install the Dynatrace Ant Library as described here: https://community.dynatrace.com/community/display/DL/Dynatrace+Test+Automation+and+Ant 
+Download and install the Dynatrace Ant Library as described here: https://github.com/Dynatrace/Dynatrace-Ant-Plugin/
 
 **Import the Dynatrace Ant Task definitions**:
 
@@ -351,7 +351,7 @@ Download and install the Dynatrace Ant Library as described here: https://commun
 
 [Option 1: Test Run Registration from Jenkins](#option1)
 
-For the .net agent, the test run id must be passed through the environment variable DT_TESTRUN_ID (see also <a href="https://community.dynatrace.com/community/display/DOCDT63/.NET+Agent+Configuration" target="_blank">.NET Agent Configuration</a>). Using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin" target="_blank">EnvInject Plugin</a> in Jenkins you can inject the DT_TESTRUN_ID variable between the Register Test Run and the Execute Build steps.
+For the .NET agent, the test run id must be passed through the environment variable `DT_TESTRUN_ID` (see also <a href="https://community.dynatrace.com/community/display/DOCDT63/.NET+Agent+Configuration" target="_blank">.NET Agent Configuration</a>). Using <a href="https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin" target="_blank">EnvInject Plugin</a> in Jenkins you can inject the `DT_TESTRUN_ID` variable between the Register Test Run and the Execute Build steps.
 
 <img src="/img/conf/NAnt.png" />
 
