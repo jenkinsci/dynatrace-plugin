@@ -101,7 +101,7 @@ public final class Utils {
 		for (com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkMeasure : sdkTestResult.getMeasures()) {
 			measures.add(convertTestMeasure(sdkMeasure));
 		}
-		return new TestResult(new Date(sdkTestResult.getExecutionTime()), sdkTestResult.getName(), sdkTestResult.getPackageName(), sdkTestResult.getPlatform(), convertTestStatus(sdkTestResult.getStatus()), measures);
+		return new TestResult(sdkTestResult.getExecutionTime(), sdkTestResult.getName(), sdkTestResult.getPackageName(), sdkTestResult.getPlatform(), convertTestStatus(sdkTestResult.getStatus()), measures);
 	}
 
 	public static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
