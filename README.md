@@ -91,7 +91,8 @@ The testrun id is available as environment variable which can be passed to the D
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
 
-**Maven tip**
+**Maven tip:**
+
 Maven allows passing java arguments into surefire and failsafe plugins directly from commandline. Thus you may avoid altering your build script.
 
 ![maven arguments](/img/conf/maven_argline.png)
