@@ -61,7 +61,7 @@ If you are using Jenkins 2.5 or higher, you need to enable the use of environmen
 
 The global settings for the plugin are located under Manage Jenkins / Configure System / Dynatrace Application Monitoring. The connection to the Dynatrace AppMon Server is configured in this section. The configured user needs to have the right credentials to be able to access the Test Automation REST API.
 
-![global settings](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/global_settings.png)
+![global settings](/img/conf/global_settings.png)
 
 The advanced section enables you to set a delay before retrieving the test results from the server. Change this settings if you are not getting all the test results in Jenkins.
 
@@ -69,7 +69,7 @@ The advanced section enables you to set a delay before retrieving the test resul
 
 In the build configuration (build name / configure), first enable *Use Dynatrace AppMon to monitor tests* in the **Build Environment** and fill the required fields.
 
-![build environment](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_environment.png)
+![build environment](/img/conf/build_environment.png)
 
 #### <a name="option1"/> Option 1: Test Run Registration from Jenkins
 
@@ -81,7 +81,7 @@ Use this option when:
 
 Then, for each test category (Unit Test, Performance Test, Browser Test or Web API Test), you need to add a **build step** to register a test run to the Dynatrace AppMon server before running your tests.
 
-![build step register testrun](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/build_step_register_test_run.png)
+![build step register testrun](/img/conf/build_step_register_test_run.png)
 
 The testrun id is available as environment variable which can be passed to the Dynatraceagent in the build script.
 
@@ -90,6 +90,11 @@ The testrun id is available as environment variable which can be passed to the D
 <jvmarg value="-agentpath:$/var/lib/dynatrace/agent/lib64/libdtagent.so=name=JavaAgent,
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 ```
+
+**Maven tip**
+Maven allows passing java arguments into surefire and failsafe plugins directly from commandline. Thus you may avoid altering your build script.
+
+![maven arguments](/img/conf/maven_argline.png)
 
 #### <a name="option2"/> Option 2: Test Run Registration from Maven/Ant/Gradle/...
 
@@ -107,7 +112,7 @@ Use this option when:
 
 At the end of the build, add the Dynatrace AppMon **post-build action** to retrieve the test results. You can also decide if the test results will change the build status.
 
-![post build action](https://github.com/Dynatrace/Dynatrace-Jenkins-Plugin/blob/master/img/conf/post_build_action.png)
+![post build action](/img/conf/post_build_action.png)
 
 ## <a name="examples"/> Examples
 
