@@ -83,7 +83,7 @@ Then, for each test category (Unit Test, Performance Test, Browser Test or Web A
 
 ![build step register testrun](/img/conf/build_step_register_test_run.png)
 
-The testrun id is available as environment variable which can be passed to the Dynatraceagent in the build script.
+The testrun id is available as environment variable which can be passed to the Dynatrace agent in the build script.
 
 **Example:**
 ```xml
@@ -93,7 +93,8 @@ server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 
 **Maven tip:**
 
-Maven allows passing java arguments into surefire and failsafe plugins directly from commandline. Thus you may avoid altering your build script.
+Maven allows passing java arguments into surefire and failsafe plugins directly from commandline. 
+Thus Dynatrace agent settings may be passed using jenkins build step definition (no changes required in maven build script).       
 
 ![maven arguments](/img/conf/maven_argline.png)
 
