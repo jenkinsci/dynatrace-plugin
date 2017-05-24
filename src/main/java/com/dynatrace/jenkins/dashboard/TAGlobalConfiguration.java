@@ -58,7 +58,7 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	private static final int DEFAULT_PORT = 8021;
 	private static final String DEFAULT_USERNAME = "admin";
 	private static final String DEFAULT_PASSWORD = "admin";
-	private static final int DEFAULT_DELAY = 10; // seconds
+	private static final int DEFAULT_DELAY = 0; // seconds
 	private static final int DEFAULT_RETRY_COUNT = 3;
 	private static final boolean DEFAULT_VALIDATE_CERTS = true;
 
