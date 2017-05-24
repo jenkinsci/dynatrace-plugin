@@ -55,7 +55,7 @@ public class TAReportRetrieverByTestRunId extends TAReportRetriever {
 	public TAReportDetails fetchReport() throws InterruptedException, ServerConnectionException, ServerResponseException {
 		final List<TestRun> testRunsList = new ArrayList<>();
 
-		for(String testRunId : testRunIds){
+		for (String testRunId : testRunIds) {
 			logger.println(String.format("Finishing test run with ID=%s", testRunId));
 			Utils.convertTestRun(connection.finishTestRun(systemProfile, testRunId));
 		}
