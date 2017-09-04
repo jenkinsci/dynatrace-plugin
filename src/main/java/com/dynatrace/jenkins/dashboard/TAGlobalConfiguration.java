@@ -191,7 +191,11 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 					case HTTP_UNAUTHORIZED:
 						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
 					case HTTP_FORBIDDEN:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
+						if (protocol.equals("http")) {
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTP_USED());
+						} else {
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTPS_USED());
+						}
 					case HTTP_NOT_FOUND:
 						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
 					default:
