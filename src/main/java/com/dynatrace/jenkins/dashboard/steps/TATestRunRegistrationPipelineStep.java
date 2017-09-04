@@ -80,7 +80,6 @@ public class TATestRunRegistrationPipelineStep extends AbstractStepImpl{
     }
 
     @Extension
-    @Symbol("appMonRegisterTestRun")/**is a function name in pipeline script*/
     public static final class DescriptorImpl extends AbstractStepDescriptorImpl {
 
         private static final String DEFAULT_CATEGORY = TestCategory.UNIT.getInternal();

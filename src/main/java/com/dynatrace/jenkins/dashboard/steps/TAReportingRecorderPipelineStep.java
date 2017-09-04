@@ -86,7 +86,6 @@ public class TAReportingRecorderPipelineStep extends AbstractStepImpl {
     }
 
     @Extension
-    @Symbol("appMonPublishTestResults")/*is a function name in pipeline script*/
     public static final class DescriptorImpl extends AbstractStepDescriptorImpl{
 
         private static final boolean DEFAULT_PRINT_XML_REPORT_FOR_DEBUG = false;
