@@ -38,17 +38,22 @@ import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import com.dynatrace.sdk.server.testautomation.models.FetchTestRunsRequest;
 import com.sun.jersey.api.client.ClientHandlerException;
+import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
-import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
+import jenkins.tasks.SimpleBuildWrapper;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -61,7 +66,7 @@ import static java.net.HttpURLConnection.*;
 /**
  * Created by krzysztof.necel on 2016-02-09.
  */
-public class TABuildWrapper extends BuildWrapper {
+public class TABuildWrapper extends SimpleBuildWrapper {
 
 	/**
 	 * The 1st arg is system profile name, the 2nd is build number
@@ -70,14 +75,18 @@ public class TABuildWrapper extends BuildWrapper {
 
 	public final String systemProfile;
 	// Test run attributes - no versionBuild attribute because it's taken from the build object
-	public final String versionMajor;
-	public final String versionMinor;
-	public final String versionRevision;
-	public final String versionMilestone;
-	public final String marker;
-	public final Boolean recordSession;
+	public String versionMajor;
+	public String versionMinor;
+	public String versionRevision;
+	public String versionMilestone;
+	public String marker;
+	public Boolean recordSession;
+	private final Sessions sessions = new Sessions(Utils.createClient());
 
-	@DataBoundConstructor
+	/**
+	 * @deprecated use {@link #TABuildWrapper(String systemProfile)} and DataBoundSetters instead.
+	 */
+	@Deprecated
 	public TABuildWrapper(final String systemProfile, final String versionMajor, final String versionMinor,
 						  final String versionRevision, final String versionMilestone, final String marker,
 						  final Boolean recordSession) {
@@ -90,17 +99,58 @@ public class TABuildWrapper extends BuildWrapper {
 		this.recordSession = recordSession;
 	}
 
+	@DataBoundConstructor
+	public TABuildWrapper(String systemProfile) {
+		this.systemProfile = systemProfile;
+		this.versionMajor = "";
+		this.versionMinor = "";
+		this.versionRevision = "";
+		this.versionMilestone = "";
+		this.marker = "";
+		this.recordSession = false;
+	}
+
+	@DataBoundSetter
+	public void setVersionMajor(String versionMajor) {
+		this.versionMajor = versionMajor;
+	}
+
+	@DataBoundSetter
+	public void setVersionMinor(String versionMinor) {
+		this.versionMinor = versionMinor;
+	}
+
+	@DataBoundSetter
+	public void setVersionRevision(String versionRevision) {
+		this.versionRevision = versionRevision;
+	}
+
+	@DataBoundSetter
+	public void setVersionMilestone(String versionMilestone) {
+		this.versionMilestone = versionMilestone;
+	}
+
+	@DataBoundSetter
+	public void setMarker(String marker) {
+		this.marker = marker;
+	}
+
+	@DataBoundSetter
+	public void setRecordSession(Boolean recordSession) {
+		this.recordSession = recordSession;
+	}
+
 	@Override
-	public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		final Sessions sessions = new Sessions(Utils.createClient());
+	public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		final PrintStream logger = listener.getLogger();
 		try {
+			if (globalConfig == null) {
+				throw new IllegalArgumentException("Global config shouldn't be null");
+			}
 			String serverUrl = new URI(globalConfig.protocol, null, globalConfig.host, globalConfig.port, null, null, null).toString();
-
 			if (recordSession) {
 				logger.println("Starting session recording via Dynatrace Server REST interface...");
-
 
 				StartRecordingRequest request = new StartRecordingRequest(systemProfile);
 				request.setPresentableName(String.format(RECORD_SESSION_NAME, systemProfile, build.getNumber()));
@@ -115,38 +165,11 @@ public class TABuildWrapper extends BuildWrapper {
 			build.addAction(new TABuildSetupStatusAction(true));
 			logger.println("ERROR: Dynatrace AppMon Plugin - build set up failed (see the stacktrace to get more information):\n" + e.toString());
 		}
-
-		return new Environment() {
-
-			@Override
-			public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
-				final PrintStream logger = listener.getLogger();
-				logger.println("Dynatrace AppMon Plugin - build tear down...");
-				try {
-					if (recordSession) {
-						final String storedSessionName = storeSession(logger);
-						Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_STORED_SESSION_NAME, storedSessionName);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.println("ERROR: Dynatrace AppMon Plugin - build tear down failed (see the stacktrace to get more information):\n" + e.toString());
-				}
-				return true;
-			}
-
-			/**
-			 * @return stored session name
-			 */
-			private String storeSession(final PrintStream logger) throws ServerResponseException, ServerConnectionException {
-				logger.println("Storing session via Dynatrace Server REST interface...");
-				String sessionName = sessions.stopRecording(systemProfile);
-				logger.println("Dynatrace session " + sessionName + " has been stored");
-				return sessionName;
-			}
-		};
+		context.setDisposer(new DisposerImpl(this));
 	}
 
-	private void setupBuildVariables(AbstractBuild build, String serverUrl) {
+
+	private void setupBuildVariables(Run<?,?> build, String serverUrl) {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 
 		List<ParameterValue> parameters = new ArrayList<>(10);
@@ -170,16 +193,17 @@ public class TABuildWrapper extends BuildWrapper {
 		if (StringUtils.isNotEmpty(serverUrl)) {
 			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_SERVER_URL, serverUrl));
 		}
-		if (StringUtils.isNotEmpty(globalConfig.username)) {
+		if (globalConfig != null && StringUtils.isNotEmpty(globalConfig.username)) {
 			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
 		}
-		if (StringUtils.isNotEmpty(globalConfig.password)) {
+		if (globalConfig != null && StringUtils.isNotEmpty(globalConfig.password)) {
 			parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
 		}
 		Utils.updateBuildVariables(build, parameters);
 	}
 
 	@Extension
+	@Symbol("appMonBuildEnvironment")/**is a function name in pipeline script*/
 	public static class DescriptorImpl extends BuildWrapperDescriptor {
 
 		private static final boolean DEFAULT_RECORD_SESSION = false;
@@ -189,6 +213,7 @@ public class TABuildWrapper extends BuildWrapper {
 		}
 
 		@Override
+		@Nonnull
 		public String getDisplayName() {
 			return Messages.BUILD_WRAPPER_DISPLAY_NAME();
 		}
@@ -235,6 +260,40 @@ public class TABuildWrapper extends BuildWrapper {
 					return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_CERT_EXCEPTION(e.toString()));
 				}
 				return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNKNOWN(e.toString()));
+			}
+		}
+	}
+
+	private static final class DisposerImpl extends Disposer{
+		private static final long serialVersionUID = 1L;
+		private transient TABuildWrapper wrapper;
+
+		DisposerImpl(TABuildWrapper buildWrapper) {
+			wrapper = buildWrapper;
+		}
+
+		/**
+		 * @return stored session name
+		 */
+		private String storeSession(final PrintStream logger, Sessions sessions) throws ServerResponseException, ServerConnectionException {
+			logger.println("Storing session via Dynatrace Server REST interface...");
+			String sessionName = sessions.stopRecording(wrapper.systemProfile);
+			logger.println("Dynatrace session " + sessionName + " has been stored");
+			return sessionName;
+		}
+
+		@Override
+		public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+			PrintStream logger = listener.getLogger();
+			logger.println("Dynatrace AppMon Plugin - build tear down...");
+			try {
+				if (wrapper.recordSession) {
+					final String storedSessionName = storeSession(logger, wrapper.sessions);
+					Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_STORED_SESSION_NAME, storedSessionName);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.println("ERROR: Dynatrace AppMon Plugin - build tear down failed (see the stacktrace to get more information):\n" + e.toString());
 			}
 		}
 	}

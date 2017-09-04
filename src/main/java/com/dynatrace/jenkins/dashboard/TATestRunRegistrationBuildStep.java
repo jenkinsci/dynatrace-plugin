@@ -37,15 +37,17 @@ import com.dynatrace.sdk.server.testautomation.models.TestCategory;
 import com.dynatrace.sdk.server.testautomation.models.TestMetaData;
 import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
-import jenkins.model.GlobalConfiguration;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -54,10 +56,11 @@ import java.util.Map;
 /**
  * @author cwpl-dglugla
  */
-public class TATestRunRegistrationBuildStep extends Builder {
+public class TATestRunRegistrationBuildStep extends Builder implements SimpleBuildStep{
 
 	private final String category;
 	private final String platform;
+	private String testRunId;
 
 	@DataBoundConstructor
 	public TATestRunRegistrationBuildStep(String category, String platform) {
@@ -73,16 +76,19 @@ public class TATestRunRegistrationBuildStep extends Builder {
 		return platform;
 	}
 
-	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-		final PrintStream logger = listener.getLogger();
-		if (!Utils.isValidBuild(build, logger, "test run won't be registered")) {
-			return true;
-		}
+	public String getTestRunId() {
+		return testRunId;
+	}
 
+	@Override
+	public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
+		final PrintStream logger = listener.getLogger();
+		if (!Utils.isValidBuild(build, logger, "test run won't be registered")){
+			return;
+		}
 		logger.println("Registering test run via Dynatrace Server REST interface...");
 		try {
-			Map<String, String> variables = build.getBuildVariables();
+			Map<String, String> variables = build.getEnvironment(listener);
 			String systemProfile = variables.get(BuildVarKeys.BUILD_VAR_KEY_SYSTEM_PROFILE);
 			String versionMajor = variables.get(BuildVarKeys.BUILD_VAR_KEY_VERSION_MAJOR);
 			String versionMinor = variables.get(BuildVarKeys.BUILD_VAR_KEY_VERSION_MINOR);
@@ -107,19 +113,18 @@ public class TATestRunRegistrationBuildStep extends Builder {
 			request.setAdditionalMetaData(new TestMetaData(additionalInformation));
 			TestRun testRun = restEndpoint.createTestRun(request);
 
+			testRunId = testRun.getId();
 			Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_TEST_RUN_ID, testRun.getId());
 			updateTestRunIdsAction(build, testRun.getId());
 
 			logger.println("Registered test run with ID=" + testRun.getId());
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.println("ERROR: Dynatrace AppMon Plugin - build step execution failed (see the stacktrace to get more information):\n" + e.toString());
-			return false;
 		}
 	}
 
-	private void updateTestRunIdsAction(AbstractBuild build, String newTestRunId) {
+	private void updateTestRunIdsAction(Run build, String newTestRunId) {
 		TATestRunIdsAction testRunIdsAction = build.getAction(TATestRunIdsAction.class);
 		if (testRunIdsAction == null) {
 			testRunIdsAction = new TATestRunIdsAction();
@@ -143,6 +148,7 @@ public class TATestRunRegistrationBuildStep extends Builder {
 		}
 
 		@Override
+		@Nonnull
 		public String getDisplayName() {
 			return Messages.BUILD_STEP_DISPLAY_NAME();
 		}

@@ -7,6 +7,7 @@ import com.dynatrace.jenkins.dashboard.model.TestCaseStatus;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReport;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import org.junit.Test;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ public class UtilsCompatTest {
 		TestAutomationBuildAction buildAction = mock(TestAutomationBuildAction.class);
 		when(buildAction.getTestAutomationReport()).thenReturn(oldReport);
 
-		AbstractBuild build = mock(AbstractBuild.class);
+		Run build = mock(Run.class);
 		when(build.getAction(TestAutomationBuildAction.class)).thenReturn(buildAction);
 
 		TAReport result = UtilsCompat.getCompatReport(build);
@@ -47,7 +48,7 @@ public class UtilsCompatTest {
 		assertThat("Result summary must not be null", result, is(notNullValue()));
 		TestUtils.assertSummary(resultSummary, 1, 2, 3, 4, 0, 0);
 
-		AbstractBuild<?, ?> resultBuild = result.getBuild();
+		Run<?, ?> resultBuild = result.getBuild();
 		assertThat("Compat report must reference build that was passed", resultBuild, is(theInstance(build)));
 	}
 

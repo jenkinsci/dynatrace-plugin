@@ -68,7 +68,7 @@ DAMAGE.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jenkins.version>1.579</jenkins.version>
+    <jenkins.version>2.0</jenkins.version>
     <findbugs.skip>true</findbugs.skip>
     <argLine />
   </properties>
@@ -125,6 +125,27 @@ DAMAGE.
       <artifactId>mockito-core</artifactId>
       <version>2.0.57-beta</version>
       <scope>test</scope>
+    </dependency>
+    <!-- dependencies on Jenkins Pipeline plugin-->
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-job</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-cps</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins.workflow</groupId>
+      <artifactId>workflow-basic-steps</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci</groupId>
+      <artifactId>symbol-annotation</artifactId>
+      <version>1.1</version>
     </dependency>
   </dependencies>
 
