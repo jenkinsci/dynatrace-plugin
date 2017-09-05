@@ -203,7 +203,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 	}
 
 	@Extension
-	@Symbol("appMonBuildEnvironment")/**is a function name in pipeline script*/
+	@Symbol("appMonBuildEnvironment")/*is a function name in pipeline script*/
 	public static class DescriptorImpl extends BuildWrapperDescriptor {
 
 		private static final boolean DEFAULT_RECORD_SESSION = false;

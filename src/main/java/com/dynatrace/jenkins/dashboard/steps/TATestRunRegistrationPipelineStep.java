@@ -72,9 +72,7 @@ public class TATestRunRegistrationPipelineStep extends AbstractStepImpl{
             if (buildStep.getTestRunId() != null) {
                 return buildStep.getTestRunId();
             }
-            else{
-                return "";
-            }
+            return "";
         }
 
     }

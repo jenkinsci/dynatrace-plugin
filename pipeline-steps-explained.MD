@@ -1,6 +1,6 @@
 Dynatrace AppMon Pipeline steps
 -------------------------------
-Requirements: Jenkins 2.0+ with <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin">Pipeline Plugin</a> is supported. Older versions could work, but are no officially supported.
+Requirements: Jenkins 2.0+ with <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin">Pipeline Plugin</a> is supported. Older versions could work, but are not officially supported.
 
 Warning: If you are using Jenkins in version lower than 2.7.3(2016/08/31), please ensure you have Pipeline: Nodes and Processes plugin in version at most 2.13.
 
@@ -11,7 +11,7 @@ Global configuration is the same as for freestyle projects. It's described [here
 
 ---
 #### **appMonBuildEnvironment**
-Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' section. It is a wrapper - all other appMon steps should be surrounded by `appMonBuildEnvironment`.
+Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' section. It is a wrapper - all other `appMon*` steps should be surrounded by `appMonBuildEnvironment`.
 
 * Required parameter:
     * `systemProfile`
@@ -46,9 +46,9 @@ Corresponds to 'Dynatrace AppMon - Register Test Run' step from freestyle projec
 * Optional parameter:
     * `platform`
 
-Returns registered testRunId, which must be injected into test execution.
+Returns registered `testRunId`, which must be injected into test execution.
 ##### Example of usage (with Maven):
-With Maven and Surefire or Failsafe plugin you don't need any additional configuration in your project. Everything is done from jenkins pipeline script.
+With Maven and Surefire or Failsafe plugin you don't need additional configuration in your project. Everything is done from jenkins pipeline script.
 
 ```groovy
 def testRunId = appMonRegisterTestRun category: 'unit'
