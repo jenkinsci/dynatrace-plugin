@@ -46,6 +46,7 @@ import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -222,11 +223,10 @@ public class TABuildWrapper extends BuildWrapper {
 						case HTTP_UNAUTHORIZED:
 							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
 						case HTTP_FORBIDDEN:
-							if (globalConfig!= null && globalConfig.protocol.equals("http")) {
-								return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTP_USED());
-							} else {
-								return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTPS_USED());
+							if (globalConfig != null && globalConfig.protocol.equals("http")) {
+								return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTP_USED(ExceptionUtils.getRootCauseMessage(e)));
 							}
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTPS_USED(ExceptionUtils.getRootCauseMessage(e)));
 						case HTTP_NOT_FOUND:
 							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
 						default:
