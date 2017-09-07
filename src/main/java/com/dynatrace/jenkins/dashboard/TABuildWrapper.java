@@ -49,6 +49,7 @@ import jenkins.model.GlobalConfiguration;
 import jenkins.tasks.SimpleBuildWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -236,6 +237,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 
 		public FormValidation doTestDynatraceConnection(@QueryParameter final String systemProfile) {
 			try {
+				final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 				final TestAutomation connection = new TestAutomation(Utils.createClient());
 				FetchTestRunsRequest request = new FetchTestRunsRequest(systemProfile);
 				//We set many constraints to ENSURE no or few testruns are returned as this is testing the connection only
@@ -249,7 +251,10 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 						case HTTP_UNAUTHORIZED:
 							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
 						case HTTP_FORBIDDEN:
-							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
+							if (globalConfig != null && globalConfig.protocol.equals("http")) {
+								return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTP_USED(ExceptionUtils.getRootCauseMessage(e)));
+							}
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTPS_USED(ExceptionUtils.getRootCauseMessage(e)));
 						case HTTP_NOT_FOUND:
 							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
 						default:
