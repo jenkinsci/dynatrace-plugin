@@ -15,9 +15,14 @@ Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' 
 * Required parameter:
     * `systemProfile`
 * Optional parameters:
-    * `version*` - version descriptors aggregated to "major.minor.revision.milestone" pattern
+    * `versionMajor` - 	"A" section of "A.B.C.D Milestone E" version ('dtVersionMajor' var)
+    * `versionMinor` - "B" section of "A.B.C.D Milestone E" version ('dtVersionMinor' var)
+    * `versionRevision` - "C" section of "A.B.C.D Milestone E" version ('dtVersionRevision' var)
+    * `versionMilestone` - "E" section of "A.B.C.D Milestone E" version ('dtVersionMilestone' var)
     * `marker` - string literal to provide a user-defined marker
     * `recordSession` - boolean flag to enable session recording
+
+    Version descriptors are aggregated to 'major.minor.revision.build milestone' pattern
 
 ##### Examples of usage:
 Minimal set of parameters required:
@@ -38,7 +43,7 @@ appMonBuildEnvironment(marker: '1', recordSession: true, systemProfile: 'test_je
 Has the same purpose as 'Dynatrace AppMon - Register Test Run' step - registers a Test Run used to differentiate subsets of tests. Uses Test Run's metadata defined in 'appMonBuildEnvironment' wrapper step.
 
 * Required parameter:
-    * `category` - category of TestRun(unit, uidriven, performance, webapi, external)
+    * `category` - category of TestRun (unit, uidriven, performance, webapi)
 * Optional parameter:
     * `platform` - platform on which tests are executed
 
