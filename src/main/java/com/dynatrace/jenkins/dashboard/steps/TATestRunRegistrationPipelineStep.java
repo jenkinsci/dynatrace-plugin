@@ -17,7 +17,10 @@ import org.kohsuke.stapler.DataBoundSetter;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-/**Extracted to new step, because we need to return a value (testRunId) from step*/
+/**
+ * @author piotr.lugowski
+ */
+/*Extracted to new step, because we need to return a value (testRunId) from step*/
 public class TATestRunRegistrationPipelineStep extends AbstractStepImpl{
 
     private final String category;
@@ -82,6 +85,8 @@ public class TATestRunRegistrationPipelineStep extends AbstractStepImpl{
 
         private static final String DEFAULT_CATEGORY = TestCategory.UNIT.getInternal();
 
+        private static final String FUNCTION_NAME = "appMonRegisterTestRun";
+
         public DescriptorImpl() {
             super(Execution.class);
         }
@@ -92,7 +97,7 @@ public class TATestRunRegistrationPipelineStep extends AbstractStepImpl{
 
         @Override
         public String getFunctionName() {
-            return "appMonRegisterTestRun";
+            return FUNCTION_NAME;
         }
 
         @Override

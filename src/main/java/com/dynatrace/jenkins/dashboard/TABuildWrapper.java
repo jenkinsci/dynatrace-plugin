@@ -65,6 +65,7 @@ import static java.net.HttpURLConnection.*;
 
 /**
  * Created by krzysztof.necel on 2016-02-09.
+ * @author piotr.lugowski
  */
 public class TABuildWrapper extends SimpleBuildWrapper {
 
@@ -193,17 +194,19 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		if (StringUtils.isNotEmpty(serverUrl)) {
 			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_SERVER_URL, serverUrl));
 		}
-		if (globalConfig != null && StringUtils.isNotEmpty(globalConfig.username)) {
-			parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
-		}
-		if (globalConfig != null && StringUtils.isNotEmpty(globalConfig.password)) {
-			parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
+		if (globalConfig != null) {
+			if (StringUtils.isNotEmpty(globalConfig.username)) {
+				parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
+			}
+			if (StringUtils.isNotEmpty(globalConfig.password)) {
+				parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
+			}
 		}
 		Utils.updateBuildVariables(build, parameters);
 	}
 
 	@Extension
-	@Symbol("appMonBuildEnvironment")/*is a function name in pipeline script*/
+	@Symbol("appMonBuildEnvironment")
 	public static class DescriptorImpl extends BuildWrapperDescriptor {
 
 		private static final boolean DEFAULT_RECORD_SESSION = false;

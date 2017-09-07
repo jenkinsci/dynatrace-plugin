@@ -58,6 +58,7 @@ import java.util.Map;
 
 /**
  * Created by krzysztof.necel on 2016-02-09.
+ * @author piotr.lugowski
  */
 public class TAReportingRecorder extends Recorder implements SimpleBuildStep{
 

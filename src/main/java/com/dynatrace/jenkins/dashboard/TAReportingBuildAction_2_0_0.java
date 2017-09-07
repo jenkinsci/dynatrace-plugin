@@ -46,8 +46,9 @@ import java.util.Collections;
 
 /**
  * Created by krzysztof.necel on 2016-02-05.
+ * @author piotr.lugowski
  */
-public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction, RunAction2{
+public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction, RunAction2 {
 
 	private static final String URL_NAME = "dynatrace-test-result";
 

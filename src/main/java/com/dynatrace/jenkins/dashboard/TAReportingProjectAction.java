@@ -60,6 +60,7 @@ import java.util.TreeMap;
 
 /**
  * Created by krzysztof.necel on 2016-02-05.
+ * @author piotr.lugowski
  */
 public class TAReportingProjectAction implements Action{
 

@@ -1,54 +1,50 @@
 Dynatrace AppMon Pipeline steps
 -------------------------------
-Requirements: Jenkins 2.0+ with <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin">Pipeline Plugin</a> is supported. Older versions could work, but are not officially supported.
+Requirements: Jenkins 2.0+ with <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin">Pipeline Plugin</a>.
 
-Warning: If you are using Jenkins in version lower than 2.7.3(2016/08/31), please ensure you have Pipeline: Nodes and Processes plugin in version at most 2.13.
+Note: If you are using Jenkins 2.7.2 (or earlier), please ensure that your <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Nodes+and+Processes+Plugin">Pipeline: Nodes and Processes plugin</a> version is not higher than 2.13.
 
-Warning: To have 'Test result trend' and 'Latest Test Result' links on Maven project main page, please use <a href="https://wiki.jenkins.io/display/JENKINS/Maven+Project+Plugin">Maven Integration Plugin</a> in version 2.13+.
+Note: For Maven projects, please use <a href="https://wiki.jenkins.io/display/JENKINS/Maven+Project+Plugin">Maven Integration Plugin</a> version 2.13 (or higher).
 
-Global configuration is the same as for freestyle projects. It's described [here](README.MD) in Global Settings section.
-> When not specified, assume step parameter is literal type.
+Global configuration remains unchanged and is described [here](README.MD) in Global Settings section.
 
 ---
 #### **appMonBuildEnvironment**
-Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' section. It is a wrapper - all other `appMon*` steps should be surrounded by `appMonBuildEnvironment`.
+Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' section. Wrapper that provides constant Test Run metadata for all 'appMonRegisterTestRun' steps defined.
 
 * Required parameter:
     * `systemProfile`
 * Optional parameters:
-    * `versionMajor`
-    * `versionMinor`
-    * `versionRevision`
-    * `versionMilestone`
-    * `marker`
-    * `recordSession` [boolean]
+    * `version*` - version descriptors aggregated to "major.minor.revision.milestone" pattern
+    * `marker` - string literal to provide a user-defined marker
+    * `recordSession` - boolean flag to enable session recording
 
 ##### Examples of usage:
-With required parameter only:
+Minimal set of parameters required:
 
 ```groovy
-appMonBuildEnvironment(systemProfile: 'test_jenkins'){
+appMonBuildEnvironment(systemProfile: 'test_jenkins') {
     //your pipeline logic
 }
 ```
-With all parameters:
+All TestRun properties provided:
 ```groovy
-appMonBuildEnvironment(marker: '1', recordSession: true, systemProfile: 'test_jenkins', versionMajor: '5', versionMilestone: '2', versionMinor: '4', versionRevision: '3'){
+appMonBuildEnvironment(marker: '1', recordSession: true, systemProfile: 'test_jenkins', versionMajor: '5', versionMilestone: '2', versionMinor: '4', versionRevision: '3') {
     //your pipeline logic
 }
 ```
 ---
 #### **appMonRegisterTestRun**
-Corresponds to 'Dynatrace AppMon - Register Test Run' step from freestyle projects.
+Has the same purpose as 'Dynatrace AppMon - Register Test Run' step - registers a Test Run used to differentiate subsets of tests. Uses Test Run's metadata defined in 'appMonBuildEnvironment' wrapper step.
 
 * Required parameter:
-    * `category` (unit, uidriven, performance, webapi, external)
+    * `category` - category of TestRun(unit, uidriven, performance, webapi, external)
 * Optional parameter:
-    * `platform`
+    * `platform` - platform on which tests are executed
 
-Returns registered `testRunId`, which must be injected into test execution.
-##### Example of usage (with Maven):
-With Maven and Surefire or Failsafe plugin you don't need additional configuration in your project. Everything is done from jenkins pipeline script.
+Returns ID of a registered Test Run, which can be passed to your test execution command.
+##### Usage example (with Maven):
+Using Surefire or Failsafe plugin there's no need to adapt your project's configuration, except for few Jenkins pipeline script changes described below.
 
 ```groovy
 def testRunId = appMonRegisterTestRun category: 'unit'
@@ -56,10 +52,10 @@ bat(<your Maven path> -DargLine="-agentpath:<path to dtagent.dll/dtagent.so>=nam
 ```
 
 
-##### Example of usage (with Ant):
+##### Usage example (with Ant):
 
-With Ant it is needed to add few lines to build script, as described [here](example-ant-with-jenkins.md).
-Then you could invoke your test from pipeline script this way (assuming `dt_agent_path`, `dt_agent_name` and `dt_server` are configured in your build script):
+
+Follow the instructions described [here](example-ant-with-jenkins.md) and adapt your pipeline script as follows (assuming `dt_agent_path`, `dt_agent_name` and `dt_server` are configured in your build script):
 ```groovy
 def testRunId = appMonRegisterTestRun category: 'unit'
 bat(<your Ant path> -DdtTestrunID=${testRunId} <Ant targets>/)
@@ -70,13 +66,13 @@ Corresponds to 'Dynatrace AppMon - Publish Test Results' post-build step from fr
 
 * No required parameters.
 * Optional parameters:
-    * `modifyStatusIfDegraded`
-    * `statusNameIfDegraded`
-    * `modifyStatusIfVolatile`
-    * `statusNameIfVolatile`
-    * `printXmlReportForDebug` [boolean]
+    * `modifyStatusIfDegraded` - boolean flag to enable modifying test status on degraded tests
+    * `statusNameIfDegraded` - string literal to provide status name for degraded tests
+    * `modifyStatusIfVolatile` - boolean flag to enable modifying test status on volatile tests
+    * `statusNameIfVolatile` - string literal to provide status name for volatile tests
+    * `printXmlReportForDebug` - boolean flag to enable printing Xml report for debugging
 
-##### Examples of usage:
+##### Usage examples:
 
 Without parameters:
 ```groovy
@@ -88,6 +84,6 @@ appMonPublishTestResults modifyStatusIfDegraded: true, modifyStatusIfVolatile: t
 ```
 ---
 #### Pipeline tip:
-If you are not familiar with pipeline syntax, you could go to your pipeline project menu and choose 'Pipeline syntax'. It's the best place to begin work with pipelines in Jenkins.
+If you are not familiar with pipeline syntax, you can go to your pipeline project menu and choose 'Pipeline syntax'. It's the best place to start with pipelines in Jenkins.
 
 <img src="/img/conf/pipeline_syntax.png" />

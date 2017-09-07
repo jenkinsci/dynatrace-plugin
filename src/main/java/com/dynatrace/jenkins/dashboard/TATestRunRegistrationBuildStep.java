@@ -55,6 +55,7 @@ import java.util.Map;
 
 /**
  * @author cwpl-dglugla
+ * @author piotr.lugowski
  */
 public class TATestRunRegistrationBuildStep extends Builder implements SimpleBuildStep{
 
