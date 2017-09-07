@@ -15,16 +15,12 @@ Corresponds to 'Use Dynatrace AppMon to monitor tests' from 'Build environment' 
 * Required parameter:
     * `systemProfile`
 * Optional parameters:
-    * `versionMajor` - 	"A" section of "A.B.C.D Milestone E" version ('dtVersionMajor' var)
-    * `versionMinor` - "B" section of "A.B.C.D Milestone E" version ('dtVersionMinor' var)
-    * `versionRevision` - "C" section of "A.B.C.D Milestone E" version ('dtVersionRevision' var)
-    * `versionMilestone` - "E" section of "A.B.C.D Milestone E" version ('dtVersionMilestone' var)
+    * `versionMajor`, `versionMinor`, `versionRevision`, `versionMilestone` - version descriptors aggregated to 'major.minor.revision.build milestone' pattern, where the build number is supplied by Jenkins
     * `marker` - string literal to provide a user-defined marker
     * `recordSession` - boolean flag to enable session recording
 
-    Version descriptors are aggregated to 'major.minor.revision.build milestone' pattern
 
-##### Examples of usage:
+##### Usage example:
 Minimal set of parameters required:
 
 ```groovy
