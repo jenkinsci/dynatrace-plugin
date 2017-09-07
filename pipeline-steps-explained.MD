@@ -62,7 +62,7 @@ bat(<your Ant path> -DdtTestrunID=${testRunId} <Ant targets>/)
 ```
 ---
 #### **appMonPublishTestResults**
-Corresponds to 'Dynatrace AppMon - Publish Test Results' post-build step from freestyle projects.
+Has the same purpose as 'Dynatrace AppMon - Finish Registered Test Runs and Publish Results' -  finish running Test Runs, fetches analysis data from the Dynatrace Server to display a chart with a trend on passed/degraded/failing/... etc. tests and also provides a detailed view for each test case showing the metrics recorded by Dynatrace Application Monitoring.
 
 * No required parameters.
 * Optional parameters:
