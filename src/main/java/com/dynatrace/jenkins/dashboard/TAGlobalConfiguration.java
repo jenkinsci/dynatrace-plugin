@@ -40,6 +40,7 @@ import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -191,7 +192,10 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 					case HTTP_UNAUTHORIZED:
 						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_UNAUTHORIZED());
 					case HTTP_FORBIDDEN:
-						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN());
+						if (protocol.equals("http")) {
+							return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTP_USED(ExceptionUtils.getRootCauseMessage(e)));
+						}
+						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_FORBIDDEN_HTTPS_USED(ExceptionUtils.getRootCauseMessage(e)));
 					case HTTP_NOT_FOUND:
 						return FormValidation.warning(Messages.RECORDER_VALIDATION_CONNECTION_NOT_FOUND());
 					default:
