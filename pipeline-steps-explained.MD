@@ -66,10 +66,8 @@ Has the same purpose as 'Dynatrace AppMon - Finish Registered Test Runs and Publ
 
 * No required parameters.
 * Optional parameters:
-    * `modifyStatusIfDegraded` - boolean flag to enable modifying test status on degraded tests
-    * `statusNameIfDegraded` - string literal to provide status name for degraded tests
-    * `modifyStatusIfVolatile` - boolean flag to enable modifying test status on volatile tests
-    * `statusNameIfVolatile` - string literal to provide status name for volatile tests
+    * `statusNameIfDegraded` - string literal to provide status name for degraded tests (UNSTABLE, FAILURE)
+    * `statusNameIfVolatile` - string literal to provide status name for volatile tests (UNSTABLE, FAILURE)
     * `printXmlReportForDebug` - boolean flag to enable printing Xml report for debugging
 
 ##### Usage examples:
