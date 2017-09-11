@@ -64,6 +64,11 @@ DAMAGE.
       <name>Dariusz Glugla</name>
       <email>dariusz.glugla@dynatrace.com</email>
     </developer>
+    <developer>
+      <id>piotr.lugowski</id>
+      <name>Piotr Lugowski</name>
+      <email>piotr.lugowski@dynatrace.com</email>
+    </developer>
   </developers>
 
   <properties>
