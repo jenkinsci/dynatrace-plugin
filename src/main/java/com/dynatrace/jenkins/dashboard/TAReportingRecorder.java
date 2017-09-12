@@ -39,15 +39,18 @@ import com.dynatrace.jenkins.dashboard.utils.BuildVarKeys;
 import com.dynatrace.jenkins.dashboard.utils.TAReportDetailsFileUtils;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.collections.CollectionUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
@@ -55,8 +58,9 @@ import java.util.Map;
 
 /**
  * Created by krzysztof.necel on 2016-02-09.
+ * @author piotr.lugowski
  */
-public class TAReportingRecorder extends Recorder {
+public class TAReportingRecorder extends Recorder implements SimpleBuildStep{
 
 	public final Boolean modifyStatusIfDegraded;
 	public final Boolean modifyStatusIfVolatile;
@@ -76,30 +80,22 @@ public class TAReportingRecorder extends Recorder {
 	}
 
 	@Override
-	public Action getProjectAction(AbstractProject<?, ?> project) {
-		return new TAReportingProjectAction(project);
-	}
-
-	@Override
 	public BuildStepMonitor getRequiredMonitorService() {
 		// No synchronization necessary between builds
 		return BuildStepMonitor.NONE;
 	}
 
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
-			throws InterruptedException, IOException {
+	public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
 		final PrintStream logger = listener.getLogger();
-
 		if (!Utils.isValidBuild(build, logger, "results won't be fetched from Dynatrace Server")) {
-			return true;
+			return;
 		}
-
-		final Map<String, String> envVars = build.getBuildVariables();
-		final String systemProfile = envVars.get(BuildVarKeys.BUILD_VAR_KEY_SYSTEM_PROFILE);
-		final String storedSessionName = envVars.get(BuildVarKeys.BUILD_VAR_KEY_STORED_SESSION_NAME);
-
+		final Map<String, String> envVars = build.getEnvironment(listener);
 		try {
+			final String systemProfile = envVars.get(BuildVarKeys.BUILD_VAR_KEY_SYSTEM_PROFILE);
+			final String storedSessionName = envVars.get(BuildVarKeys.BUILD_VAR_KEY_STORED_SESSION_NAME);
+
 			final TAReportRetriever reportRetriever = createReportRetriever(build, logger, systemProfile);
 
 			final TAReportDetails reportDetails = reportRetriever.fetchReport();
@@ -110,9 +106,7 @@ public class TAReportingRecorder extends Recorder {
 			TAReportDetailsFileUtils.persistReportDetails(build, reportDetails);
 			TAReportingBuildAction_2_0_0 buildAction = new TAReportingBuildAction_2_0_0(build, storedSessionName, report);
 			build.addAction(buildAction);
-
 			modifyBuildStatus(build, report);
-
 		} catch (InterruptedException e) {
 			build.setResult(Result.ABORTED);
 			logger.println("Build has been aborted - results won't be fetched from Dynatrace Server");
@@ -121,11 +115,9 @@ public class TAReportingRecorder extends Recorder {
 			e.printStackTrace();
 			logger.println("Fetching data from Dynatrace Server REST interface failed\n" + e.toString());
 		}
-
-		return true;
 	}
 
-	private TAReportRetriever createReportRetriever(AbstractBuild<?,?> build, PrintStream logger, String systemProfile) {
+	private TAReportRetriever createReportRetriever(Run<?,?> build, PrintStream logger, String systemProfile) {
 		final TATestRunIdsAction testRunIdsAction = build.getAction(TATestRunIdsAction.class);
 		final List<String> testRunIds = testRunIdsAction == null ? null : testRunIdsAction.getTestRunIds();
 
@@ -138,7 +130,7 @@ public class TAReportingRecorder extends Recorder {
 	/**
 	 * Mark the build as unstable or failure basing on Dynatrace Report
 	 */
-	private void modifyBuildStatus(AbstractBuild<?, ?> build, TAReport report) {
+	private void modifyBuildStatus(Run<?, ?> build, TAReport report) {
 		if (modifyStatusIfVolatile) {
 			modifyBuildStatusIfVolatile(build, report);
 		}
@@ -150,7 +142,7 @@ public class TAReportingRecorder extends Recorder {
 	/**
 	 * Mark the build as unstable or failure if there was any volatile test (basing on Dynatrace Report)
 	 */
-	private void modifyBuildStatusIfVolatile(AbstractBuild<?, ?> build, TAReport report) {
+	private void modifyBuildStatusIfVolatile(Run<?, ?> build, TAReport report) {
 		if (report.getVolatileCount() > 0) {
 			if (DescriptorImpl.MODIFY_BUILD_STATUS_UNSTABLE.equals(statusNameIfVolatile)) {
 				build.setResult(Result.UNSTABLE);
@@ -163,7 +155,7 @@ public class TAReportingRecorder extends Recorder {
 	/**
 	 * Mark the build as unstable or failure if there was any degraded test (basing on Dynatrace Report)
 	 */
-	private void modifyBuildStatusIfDegraded(AbstractBuild<?, ?> build, TAReport report) {
+	private void modifyBuildStatusIfDegraded(Run<?, ?> build, TAReport report) {
 		if (report.getDegradedCount() > 0) {
 			if (DescriptorImpl.MODIFY_BUILD_STATUS_UNSTABLE.equals(statusNameIfDegraded)) {
 				build.setResult(Result.UNSTABLE);
@@ -182,6 +174,7 @@ public class TAReportingRecorder extends Recorder {
 		private static final String MODIFY_BUILD_STATUS_FAILURE = "FAILURE";
 
 		@Override
+		@Nonnull
 		public String getDisplayName() {
 			return Messages.RECORDER_DISPLAY_NAME();
 		}

@@ -4,6 +4,8 @@
 
 This plugin for Jenkins pulls Test Automation data from Dynatrace AppMon and displays it through charts and tables on the project and build level.
 
+Release 2.1.0 adds support for Jenkins Pipelines. Configuration and usage examples are described [here](pipeline-steps-explained.md).
+
 * [Download Latest Release](https://github.com/jenkinsci/dynatrace-plugin/releases)
 * [Install from Jenkins Plugin Center](https://wiki.jenkins-ci.org/display/JENKINS/Dynatrace+Plugin)
 * [Jenkins Plugin on the Dynatrace Community](https://community.dynatrace.com/community/display/DL/Test+Automation+Plugin+for+Jenkins)

@@ -33,8 +33,7 @@ import com.dynatrace.jenkins.dashboard.TestAutomationBuildAction;
 import com.dynatrace.jenkins.dashboard.TestAutomationReport;
 import com.dynatrace.jenkins.dashboard.model.TestCaseStatus;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
-import com.dynatrace.sdk.server.testautomation.models.TestRuns;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 
 import java.util.*;
 
@@ -47,7 +46,7 @@ public final class UtilsCompat {
 	private UtilsCompat() {
 	}
 
-	public static TAReport getCompatReport(AbstractBuild<?, ?> build) {
+	public static TAReport getCompatReport(Run<?, ?> build) {
 		final TestAutomationBuildAction oldBuildAction = build.getAction(TestAutomationBuildAction.class);
 		if (oldBuildAction == null) {
 			return null;

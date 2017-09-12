@@ -35,7 +35,7 @@ import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import com.dynatrace.sdk.server.testautomation.models.TestRuns;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.ParameterValue;
 import hudson.model.Result;
 import hudson.model.StringParameterValue;
@@ -61,15 +61,18 @@ public final class Utils {
 
 	public static DynatraceClient createClient() {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
-		BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
-				globalConfig.password,
-				globalConfig.protocol.startsWith("https"),
-				globalConfig.host,
-				globalConfig.port,
-				globalConfig.validateCerts,
-				//connection timeout, 0 stands for infinite
-				0);
-		return new DynatraceClient(config);
+		if (globalConfig != null) {
+			BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
+                    globalConfig.password,
+                    globalConfig.protocol.startsWith("https"),
+                    globalConfig.host,
+                    globalConfig.port,
+                    globalConfig.validateCerts,
+                    //connection timeout, 0 stands for infinite
+                    0);
+			return new DynatraceClient(config);
+		}
+		return null;
 	}
 
 	public static TAReportDetails convertTestRuns(TestRuns sdkTestRuns) {
@@ -155,7 +158,7 @@ public final class Utils {
 		return d == null ? FORMAT_DOUBLE_NULL_VALUE : DECIMAL_FORMAT.format(d * 100);
 	}
 
-	public static boolean isValidBuild(AbstractBuild build, PrintStream logger, String message) {
+	public static boolean isValidBuild(Run build, PrintStream logger, String message) {
 		if (build.getResult() == Result.ABORTED) {
 			logger.println("Build has been aborted - " + message);
 			return false;
@@ -168,7 +171,7 @@ public final class Utils {
 		return true;
 	}
 
-	public static void updateBuildVariables(AbstractBuild<?, ?> build, List<ParameterValue> parameters) {
+	public static void updateBuildVariables(Run<?, ?> build, List<ParameterValue> parameters) {
 		DynatraceVariablesAction existingAction = build.getAction(DynatraceVariablesAction.class);
 		if (existingAction == null) {
 			build.addAction(new DynatraceVariablesAction(parameters));
@@ -177,7 +180,7 @@ public final class Utils {
 		}
 	}
 
-	public static void updateBuildVariable(AbstractBuild<?, ?> build, String key, String value) {
+	public static void updateBuildVariable(Run<?, ?> build, String key, String value) {
 		updateBuildVariables(build, Collections.<ParameterValue>singletonList(new StringParameterValue(key, value)));
 	}
 }

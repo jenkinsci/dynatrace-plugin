@@ -32,27 +32,32 @@ package com.dynatrace.jenkins.dashboard;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReport;
 import com.dynatrace.jenkins.dashboard.rest.ServerRestURIManager;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
-import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.model.Run;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
 
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by krzysztof.necel on 2016-02-05.
+ * @author piotr.lugowski
  */
-public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy {
+public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy, SimpleBuildStep.LastBuildAction, RunAction2 {
 
 	private static final String URL_NAME = "dynatrace-test-result";
 
-	private final AbstractBuild<?, ?> build;
+	private Run<?, ?> build;
 	private final String storedSessionName;
 	private final TAReport currentReport;
 	private transient TAReport previousReport;
 
-	public TAReportingBuildAction_2_0_0(AbstractBuild<?, ?> build, String storedSessionName, TAReport report) {
+	public TAReportingBuildAction_2_0_0(Run<?, ?> build, String storedSessionName, TAReport report) {
 		this.build = build;
 		this.storedSessionName = storedSessionName;
 		this.currentReport = report;
@@ -79,7 +84,7 @@ public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy {
 		return this;
 	}
 
-	public AbstractBuild<?, ?> getBuild() {
+	public Run<?, ?> getBuild() {
 		return build;
 	}
 
@@ -87,8 +92,11 @@ public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy {
 		if (storedSessionName != null) {
 			try {
 				final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
-				final ServerRestURIManager uriManager = new ServerRestURIManager(globalConfig.protocol, globalConfig.host, globalConfig.port);
-				return uriManager.getExportStoredSessionRequestURI(storedSessionName).toString();
+				final ServerRestURIManager uriManager;
+				if (globalConfig != null) {
+					uriManager = new ServerRestURIManager(globalConfig.protocol, globalConfig.host, globalConfig.port);
+					return uriManager.getExportStoredSessionRequestURI(storedSessionName).toString();
+				}
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
@@ -104,8 +112,12 @@ public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy {
 		return previousReport;
 	}
 
+	public void setBuild(Run<?, ?> build) {
+		this.build = build;
+	}
+
 	private void addPreviousBuildReport() {
-		AbstractBuild<?, ?> previousBuild = build.getPreviousBuild();
+		Run<?, ?> previousBuild = build.getPreviousBuild();
 		if (previousBuild == null) {
 			previousReport = null;
 			return;
@@ -127,4 +139,20 @@ public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy {
 	public static String formatMessage(String pattern, Object argument) {
 		return MessageFormat.format(pattern, argument);
 	}
+
+	@Override
+	public void onAttached(Run<?, ?> r) {
+		setBuild(r);
+	}
+
+	@Override
+	public void onLoad(Run<?, ?> r) {
+		setBuild(r);
+	}
+
+	@Override
+	public Collection<? extends Action> getProjectActions() {
+		return Collections.singletonList(new TAReportingProjectAction(build.getParent()));
+	}
+
 }

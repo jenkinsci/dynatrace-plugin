@@ -30,7 +30,7 @@
 package com.dynatrace.jenkins.dashboard.model_2_0_0;
 
 import com.dynatrace.jenkins.dashboard.utils.TAReportDetailsFileUtils;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 
 import javax.xml.bind.JAXBException;
 import java.lang.ref.SoftReference;
@@ -41,16 +41,16 @@ import java.util.Map;
  */
 public class TAReport {
 
-	private final AbstractBuild<?, ?> build;
+	private final Run<?, ?> build;
 	private final Map<TestStatus, Integer> summary;
 	private transient SoftReference<TAReportDetails> reportDetailsRef;
 
-	public TAReport(Map<TestStatus, Integer> summary, AbstractBuild<?, ?> build) {
+	public TAReport(Map<TestStatus, Integer> summary, Run<?, ?> build) {
 		this.summary = summary;
 		this.build = build;
 	}
 
-	public AbstractBuild<?, ?> getBuild() {
+	public Run<?, ?> getBuild() {
 		return build;
 	}
 

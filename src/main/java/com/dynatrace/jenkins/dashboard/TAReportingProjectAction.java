@@ -33,10 +33,9 @@ import com.dynatrace.jenkins.dashboard.model_2_0_0.TAReport;
 import com.dynatrace.jenkins.dashboard.model_2_0_0.TestStatus;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
 import com.dynatrace.jenkins.dashboard.utils.UtilsCompat;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Run;
+import hudson.model.Job;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
@@ -61,8 +60,9 @@ import java.util.TreeMap;
 
 /**
  * Created by krzysztof.necel on 2016-02-05.
+ * @author piotr.lugowski
  */
-public class TAReportingProjectAction implements Action {
+public class TAReportingProjectAction implements Action{
 
 	private static final String URL_NAME = "dynatrace-test-result-trend";
 
@@ -121,9 +121,9 @@ public class TAReportingProjectAction implements Action {
 		}
 	}
 
-	private final AbstractProject<?, ?> project;
+	private final Job<?, ?> project;
 
-	public TAReportingProjectAction(AbstractProject<?, ?> project) {
+	public TAReportingProjectAction(Job<?,?> project) {
 		this.project = project;
 	}
 
@@ -142,7 +142,7 @@ public class TAReportingProjectAction implements Action {
 		return URL_NAME;
 	}
 
-	public AbstractProject<?, ?> getProject() {
+	public Job<?, ?> getProject() {
 		return this.project;
 	}
 
@@ -194,7 +194,7 @@ public class TAReportingProjectAction implements Action {
 			return taReportList;
 		}
 
-		for (AbstractBuild currentBuild : project.getBuilds()) {
+		for (Run currentBuild : project.getBuilds()) {
 			final TAReportingBuildAction_2_0_0 buildAction = currentBuild.getAction(TAReportingBuildAction_2_0_0.class);
 			final TAReport report;
 
