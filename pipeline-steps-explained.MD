@@ -79,7 +79,7 @@ appMonPublishTestResults()
 ```
 With all parameters:
 ```groovy
-appMonPublishTestResults modifyStatusIfDegraded: true, modifyStatusIfVolatile: true, printXmlReportForDebug: true, statusNameIfDegraded: 'UNSTABLE', statusNameIfVolatile: 'UNSTABLE'
+appMonPublishTestResults printXmlReportForDebug: true, statusNameIfDegraded: 'UNSTABLE', statusNameIfVolatile: 'UNSTABLE'
 ```
 ---
 #### Pipeline tip:
