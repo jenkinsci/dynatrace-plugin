@@ -82,6 +82,44 @@ With all parameters:
 appMonPublishTestResults modifyStatusIfDegraded: true, modifyStatusIfVolatile: true, printXmlReportForDebug: true, statusNameIfDegraded: 'UNSTABLE', statusNameIfVolatile: 'UNSTABLE'
 ```
 ---
+
+#### Sample Pipeline script:
+
+```groovy
+node {
+   def mvnHome
+   //Wraps a build and creates enviroment necessary to register test run and publish test results
+   appMonBuildEnvironment(systemProfile: 'test_jenkins', recordSession: true) {
+          stage('Preparation') {
+          // Get some code from a GitHub repository
+          git branch: 'master', url: '<repo_address>'
+          // Get the Maven tool.
+          // ** NOTE: This 'M3' Maven tool must be configured
+          // **       in the global configuration.
+          mvnHome = tool 'M3'
+       }
+       stage('Test'){
+          //Registers test run
+          def testRunId = appMonRegisterTestRun category: 'unit'
+          //Inject testRunId into test execution
+          bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore -DargLine="-agentpath:'<path_to_agent>'=name=agent,server=localhost,loglevel=warning,optionTestRunIdJava=${testRunId}" clean test/)
+       }
+       stage('Test2'){
+          //Registers test run
+          def testRunId = appMonRegisterTestRun category: 'performance'
+          //Inject testRunId into test execution
+          bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore -DargLine="-agentpath:'<path_to_agent>'=name=agent,server=localhost,loglevel=warning,optionTestRunIdJava=${testRunId}" clean test/)
+       }
+       stage('Results') {
+          //Obtains results from Dynatrace server and publish in Jenkins
+          appMonPublishTestResults printXmlReportForDebug: true
+          junit '**/target/surefire-reports/TEST-*.xml'
+          archive 'target/*.jar'
+       }
+}
+}
+```
+
 #### Pipeline tip:
 If you are not familiar with pipeline syntax, you can go to your pipeline project menu and choose 'Pipeline syntax'. It's the best place to start with pipelines in Jenkins.
 

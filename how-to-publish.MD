@@ -1,4 +1,4 @@
-Dynatrace Jenkins Plugin deployment
+Dynatrace Jenkins Plugin publishing
 -----------------------------------
 1. Start an ssh-agent and import your private key - so the release plugin can access the GitHub repository.
 2. Configure the username and password for jenkins.ci-org in ~/.m2/settings.xml as described below.
