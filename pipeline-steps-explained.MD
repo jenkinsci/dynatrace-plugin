@@ -6,7 +6,7 @@ Note: If you are using Jenkins 2.7.2 (or earlier), please ensure that your <a hr
 
 Note: For Maven projects, please use <a href="https://wiki.jenkins.io/display/JENKINS/Maven+Project+Plugin">Maven Integration Plugin</a> version 2.13 (or higher).
 
-Global configuration remains unchanged and is described [here](README.MD) in Global Settings section.
+Global configuration remains unchanged and is described [here](README.md) in Global Settings section.
 
 ---
 #### **appMonBuildEnvironment**
@@ -79,7 +79,7 @@ appMonPublishTestResults()
 ```
 With all parameters:
 ```groovy
-appMonPublishTestResults modifyStatusIfDegraded: true, modifyStatusIfVolatile: true, printXmlReportForDebug: true, statusNameIfDegraded: 'UNSTABLE', statusNameIfVolatile: 'UNSTABLE'
+appMonPublishTestResults printXmlReportForDebug: true, statusNameIfDegraded: 'UNSTABLE', statusNameIfVolatile: 'UNSTABLE'
 ```
 ---
 
