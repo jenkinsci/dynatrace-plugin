@@ -8,7 +8,7 @@ Then, for each test category (Unit Test, Performance Test, Browser Test or Web A
 
 Test Run's id is available as environment variable which can be passed to the Dynatrace AppMon agent in the build script.
 
-**Example:**
+**Example (Linux 64-bit):**
 ```xml
 <jvmarg value="-agentpath:$/var/lib/dynatrace/agent/lib64/libdtagent.so=name=JavaAgent,
 server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
@@ -18,6 +18,12 @@ server=localhost:9998,loglevel=warning,optionTestRunIdJava=${dtTestrunID}" />
 
 You can pass java arguments into surefire and failsafe plugins directly from commandline, without any changes in your Maven build script needed.
 Just adapt and add following arguments in `Build -> Invoke top-level Maven targets -> Goals`:
+
+Windows:
 ```batch
--DargLine="-agentpath:<path to dtagent.dll/dtagent.so>=name=<agent name>,server=<host[:port]>,optionTestRunIdJava=%dtTestrunID%"
+-DargLine="-agentpath:<path to dtagent.dll>=name=<agent name>,server=<host[:port]>,optionTestRunIdJava=%dtTestrunID%"
+```
+Linux
+```batch
+-DargLine="-agentpath:<path to dtagent.so>=name=<agent name>,server=<host[:port]>,optionTestRunIdJava=${dtTestrunID}"
 ```
