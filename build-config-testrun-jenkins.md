@@ -23,7 +23,7 @@ Windows:
 ```batch
 -DargLine="-agentpath:<path to dtagent.dll>=name=<agent name>,server=<host[:port]>,optionTestRunIdJava=%dtTestrunID%"
 ```
-Linux
+Linux:
 ```batch
 -DargLine="-agentpath:<path to dtagent.so>=name=<agent name>,server=<host[:port]>,optionTestRunIdJava=${dtTestrunID}"
 ```
