@@ -1,4 +1,4 @@
-# Register Test Run using Dynatrace Jenkins plugin
+# Register Test Run using Dynatrace AppMon Jenkins plugin
 
 <img src="/img/conf/process_test_run_registration_jenkins.png" />
 
