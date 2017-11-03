@@ -1,4 +1,4 @@
-Dynatrace AppMon Pipeline steps
+Dynatrace AppMon Jenkins Plugin pipeline steps
 -------------------------------
 Requirements: Jenkins 2.0+ with <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Plugin">Pipeline Plugin</a>.
 
