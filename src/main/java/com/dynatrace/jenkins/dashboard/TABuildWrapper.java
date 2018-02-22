@@ -71,9 +71,9 @@ import static java.net.HttpURLConnection.*;
 public class TABuildWrapper extends SimpleBuildWrapper {
 
 	/**
-	 * The 1st arg is system profile name, the 2nd is build number
+	 * The 1st arg is system profile name, the 2nd is the session name, the 3rd is build number
 	 */
-	private static final String RECORD_SESSION_NAME = "%s_Jenkins_build_%s";
+	private static final String RECORD_SESSION_NAME = "%s_%s_build_%s";
 
 	public final String systemProfile;
 	// Test run attributes - no versionBuild attribute because it's taken from the build object
@@ -155,7 +155,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 				logger.println("Starting session recording via Dynatrace Server REST interface...");
 
 				StartRecordingRequest request = new StartRecordingRequest(systemProfile);
-				request.setPresentableName(String.format(RECORD_SESSION_NAME, systemProfile, build.getNumber()));
+				final String sessionName = String.format(RECORD_SESSION_NAME, systemProfile, build.getParent().getName(), build.getNumber()).replace("/", "_");
+				request.setPresentableName(sessionName);
 
 				final String sessionNameOut = sessions.startRecording(request);
 				logger.println("Dynatrace session " + sessionNameOut + " has been started");
