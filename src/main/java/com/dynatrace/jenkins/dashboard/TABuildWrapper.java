@@ -73,8 +73,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 	/**
 	 * The 1st arg is system profile name, the 2nd is build number
 	 */
-	//private static final String RECORD_SESSION_NAME = "%s_Jenkins_build_%s";
-	private String RECORD_SESSION_NAME;
+	private static final String RECORD_SESSION_NAME = "%s_Jenkins_build_%s";
+
 	public final String systemProfile;
 	// Test run attributes - no versionBuild attribute because it's taken from the build object
 	public String versionMajor;
@@ -146,8 +146,6 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 	public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		final PrintStream logger = listener.getLogger();
-		RECORD_SESSION_NAME = systemProfile + "_" + build.getParent().getName() + "_Build-" + build.getNumber();
-		RECORD_SESSION_NAME = RECORD_SESSION_NAME.replace("/", "_");
 		try {
 			if (globalConfig == null) {
 				throw new IllegalArgumentException("Global config shouldn't be null");
@@ -157,7 +155,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 				logger.println("Starting session recording via Dynatrace Server REST interface...");
 
 				StartRecordingRequest request = new StartRecordingRequest(systemProfile);
-				request.setPresentableName(RECORD_SESSION_NAME);
+				request.setPresentableName(String.format(RECORD_SESSION_NAME, systemProfile, build.getNumber()));
 
 				final String sessionNameOut = sessions.startRecording(request);
 				logger.println("Dynatrace session " + sessionNameOut + " has been started");
