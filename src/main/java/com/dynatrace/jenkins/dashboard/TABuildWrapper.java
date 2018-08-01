@@ -67,6 +67,7 @@ import static java.net.HttpURLConnection.*;
 /**
  * Created by krzysztof.necel on 2016-02-09.
  * @author piotr.lugowski
+ * @author dariusz.glugla
  */
 public class TABuildWrapper extends SimpleBuildWrapper {
 
@@ -83,13 +84,12 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 	public String versionMilestone;
 	public String marker;
 	public Boolean recordSession;
-	private final Sessions sessions = new Sessions(Utils.createClient());
+	private transient final Sessions sessions;
 
 	/**
 	 * @deprecated use {@link #TABuildWrapper(String systemProfile)} and DataBoundSetters instead.
 	 */
-	@Deprecated
-	public TABuildWrapper(final String systemProfile, final String versionMajor, final String versionMinor,
+	private TABuildWrapper(final String systemProfile, final String versionMajor, final String versionMinor,
 						  final String versionRevision, final String versionMilestone, final String marker,
 						  final Boolean recordSession) {
 		this.systemProfile = systemProfile;
@@ -99,17 +99,13 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		this.versionMilestone = versionMilestone;
 		this.marker = marker;
 		this.recordSession = recordSession;
+
+		this.sessions = new Sessions(Utils.createClient());
 	}
 
 	@DataBoundConstructor
 	public TABuildWrapper(String systemProfile) {
-		this.systemProfile = systemProfile;
-		this.versionMajor = "";
-		this.versionMinor = "";
-		this.versionRevision = "";
-		this.versionMilestone = "";
-		this.marker = "";
-		this.recordSession = false;
+		this(systemProfile,"","","","","",false);
 	}
 
 	@DataBoundSetter
