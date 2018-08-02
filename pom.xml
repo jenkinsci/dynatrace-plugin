@@ -35,7 +35,7 @@ DAMAGE.
   </parent>
 
   <artifactId>dynatrace-dashboard</artifactId>
-  <version>2.1.1-SNAPSHOT</version>
+  <version>2.1.2-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <name>Dynatrace Application Monitoring Plugin</name>
@@ -53,11 +53,6 @@ DAMAGE.
       <id>dynatrace</id>
       <name>Dynatrace Development Team</name>
       <email>Jenkins.Plugin@dynatrace.com</email>
-    </developer>
-    <developer>
-      <id>krzysztof.necel</id>
-      <name>Krzysztof Necel</name>
-      <email>krzysztof.necel@dynatrace.com</email>
     </developer>
     <developer>
       <id>dariusz.glugla</id>
