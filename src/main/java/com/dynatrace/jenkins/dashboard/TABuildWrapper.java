@@ -29,6 +29,41 @@
  */
 package com.dynatrace.jenkins.dashboard;
 
+import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractProject;
+import hudson.model.ParameterValue;
+import hudson.model.PasswordParameterValue;
+import hudson.model.Run;
+import hudson.model.StringParameterValue;
+import hudson.model.TaskListener;
+import hudson.tasks.BuildWrapperDescriptor;
+import hudson.util.FormValidation;
+import jenkins.model.GlobalConfiguration;
+import jenkins.tasks.SimpleBuildWrapper;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.net.ssl.SSLHandshakeException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.jenkinsci.Symbol;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+
 import com.dynatrace.jenkins.dashboard.utils.BuildVarKeys;
 import com.dynatrace.jenkins.dashboard.utils.Utils;
 import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
@@ -38,31 +73,6 @@ import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import com.dynatrace.sdk.server.testautomation.models.FetchTestRunsRequest;
 import com.sun.jersey.api.client.ClientHandlerException;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.*;
-import hudson.tasks.BuildWrapperDescriptor;
-import hudson.util.FormValidation;
-import jenkins.model.GlobalConfiguration;
-import jenkins.tasks.SimpleBuildWrapper;
-import org.apache.commons.lang.StringUtils;
-import org.jenkinsci.Symbol;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
-
-import javax.annotation.Nonnull;
-import javax.net.ssl.SSLHandshakeException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.net.HttpURLConnection.*;
 
 /**
  * Created by krzysztof.necel on 2016-02-09.
@@ -105,7 +115,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 
 	@DataBoundConstructor
 	public TABuildWrapper(String systemProfile) {
-		this(systemProfile,"","","","","",false);
+		this(systemProfile, "", "", "", "", "", false);
 	}
 
 	@DataBoundSetter
