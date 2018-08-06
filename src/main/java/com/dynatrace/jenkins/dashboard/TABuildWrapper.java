@@ -94,7 +94,6 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 	public String versionMilestone;
 	public String marker;
 	public Boolean recordSession;
-	private transient final Sessions sessions;
 
 	/**
 	 * @deprecated use {@link #TABuildWrapper(String systemProfile)} and DataBoundSetters instead.
@@ -109,8 +108,6 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		this.versionMilestone = versionMilestone;
 		this.marker = marker;
 		this.recordSession = recordSession;
-
-		this.sessions = new Sessions(Utils.createClient());
 	}
 
 	@DataBoundConstructor
@@ -150,6 +147,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 
 	@Override
 	public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
+		Sessions sessions = new Sessions(Utils.createClient());
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		final PrintStream logger = listener.getLogger();
 		try {
@@ -174,7 +172,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 			build.addAction(new TABuildSetupStatusAction(true));
 			logger.println("ERROR: Dynatrace AppMon Plugin - build set up failed (see the stacktrace to get more information):\n" + e.toString());
 		}
-		context.setDisposer(new DisposerImpl(this));
+		context.setDisposer(new DisposerImpl(this, sessions));
 	}
 
 
@@ -281,10 +279,12 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 
 	private static final class DisposerImpl extends Disposer{
 		private static final long serialVersionUID = 1L;
-		private transient TABuildWrapper wrapper;
+		private final transient Sessions sessions;
+		private final transient TABuildWrapper buildWrapper;
 
-		DisposerImpl(TABuildWrapper buildWrapper) {
-			wrapper = buildWrapper;
+		DisposerImpl(TABuildWrapper buildWrapper, Sessions sessions) {
+			this.buildWrapper = buildWrapper;
+			this.sessions = sessions;
 		}
 
 		/**
@@ -292,7 +292,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		 */
 		private String storeSession(final PrintStream logger, Sessions sessions) throws ServerResponseException, ServerConnectionException {
 			logger.println("Storing session via Dynatrace Server REST interface...");
-			String sessionName = sessions.stopRecording(wrapper.systemProfile);
+			String sessionName = sessions.stopRecording(buildWrapper.systemProfile);
 			logger.println("Dynatrace session " + sessionName + " has been stored");
 			return sessionName;
 		}
@@ -302,8 +302,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 			PrintStream logger = listener.getLogger();
 			logger.println("Dynatrace AppMon Plugin - build tear down...");
 			try {
-				if (wrapper.recordSession) {
-					final String storedSessionName = storeSession(logger, wrapper.sessions);
+				if (buildWrapper.recordSession) {
+					final String storedSessionName = storeSession(logger, sessions);
 					Utils.updateBuildVariable(build, BuildVarKeys.BUILD_VAR_KEY_STORED_SESSION_NAME, storedSessionName);
 				}
 			} catch (Exception e) {
