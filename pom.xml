@@ -45,7 +45,7 @@ DAMAGE.
     <connection>scm:git:ssh://github.com/jenkinsci/dynatrace-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/dynatrace-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/dynatrace-plugin</url>
-    <tag>dynatrace-dashboard-${version}</tag>
+    <tag>dynatrace-dashboard-${project.version}</tag>
   </scm>
 
   <developers>

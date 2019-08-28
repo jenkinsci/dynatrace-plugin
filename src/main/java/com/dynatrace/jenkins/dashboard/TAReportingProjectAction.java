@@ -62,7 +62,7 @@ import java.util.TreeMap;
  * Created by krzysztof.necel on 2016-02-05.
  * @author piotr.lugowski
  */
-public class TAReportingProjectAction implements Action{
+public class TAReportingProjectAction implements Action {
 
 	private static final String URL_NAME = "dynatrace-test-result-trend";
 
@@ -149,6 +149,10 @@ public class TAReportingProjectAction implements Action{
 
 	/**
 	 * Generates graph with the number of tests executed in each category for {@link #MAX_BUILD_NUMBER_TO_SHOW_ON_CHART} latest builds.
+	 *
+	 * @param request request sent to generate the graph
+	 * @param response response to modify (if needed)
+	 * @throws IOException when PNG file creation was not possible
 	 */
 	public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
 		final Map<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>> summaries = new TreeMap<>();
