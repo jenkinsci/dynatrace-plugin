@@ -37,6 +37,7 @@ import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import hudson.Extension;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +68,7 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	public String host = getDefaultHost();
 	public Integer port = getDefaultPort();
 	public String username = getDefaultUsername();
-	public String password = getDefaultPassword();
+	public Secret password = getDefaultPassword();
 	public Integer delay = getDefaultDelay();        // time to wait before trying to get data from the DT server in seconds
 	public Integer retryCount = getDefaultRetryCount();
 	public Boolean validateCerts = getDefaultValidateCerts();
@@ -92,7 +93,7 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 		return DEFAULT_USERNAME;
 	}
 
-	public static String getDefaultPassword() { return DEFAULT_PASSWORD; }
+	public static Secret getDefaultPassword() { return Secret.fromString(DEFAULT_PASSWORD); }
 
 	public static int getDefaultDelay() {
 		return DEFAULT_DELAY;

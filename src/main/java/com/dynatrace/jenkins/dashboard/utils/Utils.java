@@ -63,7 +63,7 @@ public final class Utils {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		if (globalConfig != null) {
 			BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
-                    globalConfig.password,
+                    globalConfig.password.getPlainText(),
                     globalConfig.protocol.startsWith("https"),
                     globalConfig.host,
                     globalConfig.port,

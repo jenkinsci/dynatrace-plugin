@@ -204,8 +204,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 			if (StringUtils.isNotEmpty(globalConfig.username)) {
 				parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
 			}
-			if (StringUtils.isNotEmpty(globalConfig.password)) {
-				parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
+			if (StringUtils.isNotEmpty(globalConfig.password.getPlainText())) {
+				parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password.getPlainText()));
 			}
 		}
 		Utils.updateBuildVariables(build, parameters);
