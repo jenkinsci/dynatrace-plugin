@@ -35,6 +35,8 @@ import com.dynatrace.jenkins.dashboard.model_2_0_0.*;
 import com.dynatrace.sdk.server.BasicServerConfiguration;
 import com.dynatrace.sdk.server.DynatraceClient;
 import com.dynatrace.sdk.server.testautomation.models.TestRuns;
+import com.google.common.collect.ImmutableList;
+
 import hudson.model.Run;
 import hudson.model.ParameterValue;
 import hudson.model.Result;
@@ -49,7 +51,7 @@ import java.util.*;
  * Created by krzysztof.necel on 2016-01-25.
  */
 public final class Utils {
-	public static final String TEST_MEASURE_UNIT_DEFAULT = "num";
+	private static final String TEST_MEASURE_UNIT_DEFAULT = "num";
 	public static final String DYNATRACE_ICON_24_X_24_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_24x24.png";
 	public static final String DYNATRACE_ICON_48_X_48_FILEPATH = "/plugin/dynatrace-dashboard/images/dynatrace_icon_48x48.png";
 
@@ -63,7 +65,7 @@ public final class Utils {
 		final TAGlobalConfiguration globalConfig = GlobalConfiguration.all().get(TAGlobalConfiguration.class);
 		if (globalConfig != null) {
 			BasicServerConfiguration config = new BasicServerConfiguration(globalConfig.username,
-                    globalConfig.password,
+                    globalConfig.password.getPlainText(),
                     globalConfig.protocol.startsWith("https"),
                     globalConfig.host,
                     globalConfig.port,
@@ -99,7 +101,7 @@ public final class Utils {
 		return new TestRun(testResults, testRunSummary, sdkTestRun.getId(), convertTestCategory(sdkTestRun.getCategory()));
 	}
 
-	public static TestResult convertTestResult(com.dynatrace.sdk.server.testautomation.models.TestResult sdkTestResult) {
+	private static TestResult convertTestResult(com.dynatrace.sdk.server.testautomation.models.TestResult sdkTestResult) {
 		Set<TestMeasure> measures = new HashSet<>();
 		for (com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkMeasure : sdkTestResult.getMeasures()) {
 			measures.add(convertTestMeasure(sdkMeasure));
@@ -107,7 +109,7 @@ public final class Utils {
 		return new TestResult(sdkTestResult.getExecutionTime(), sdkTestResult.getName(), sdkTestResult.getPackageName(), sdkTestResult.getPlatform(), convertTestStatus(sdkTestResult.getStatus()), measures);
 	}
 
-	public static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
+	private static TestMeasure convertTestMeasure(com.dynatrace.sdk.server.testautomation.models.TestMeasure sdkTestMeasure) {
 		String unit = sdkTestMeasure.getUnit() != null ? sdkTestMeasure.getUnit() : TEST_MEASURE_UNIT_DEFAULT;
 		return new TestMeasure(sdkTestMeasure.getName(),
 				sdkTestMeasure.getMetricGroup(),
@@ -118,7 +120,7 @@ public final class Utils {
 				sdkTestMeasure.getViolationPercentage());
 	}
 
-	public static TestCategory convertTestCategory(com.dynatrace.sdk.server.testautomation.models.TestCategory sdkTestCategory) {
+	private static TestCategory convertTestCategory(com.dynatrace.sdk.server.testautomation.models.TestCategory sdkTestCategory) {
 		switch (sdkTestCategory) {
 			case UNIT:
 				return TestCategory.UNIT;
@@ -132,7 +134,7 @@ public final class Utils {
 		throw new IllegalArgumentException("Could not convert TestCategory");
 	}
 
-	public static TestStatus convertTestStatus(com.dynatrace.sdk.server.testautomation.models.TestStatus sdkTestStatus) {
+	private static TestStatus convertTestStatus(com.dynatrace.sdk.server.testautomation.models.TestStatus sdkTestStatus) {
 		return TestStatus.valueOf(sdkTestStatus.name());
 	}
 
@@ -158,6 +160,7 @@ public final class Utils {
 		return d == null ? FORMAT_DOUBLE_NULL_VALUE : DECIMAL_FORMAT.format(d * 100);
 	}
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isValidBuild(Run build, PrintStream logger, String message) {
 		if (build.getResult() == Result.ABORTED) {
 			logger.println("Build has been aborted - " + message);
@@ -181,6 +184,6 @@ public final class Utils {
 	}
 
 	public static void updateBuildVariable(Run<?, ?> build, String key, String value) {
-		updateBuildVariables(build, Collections.<ParameterValue>singletonList(new StringParameterValue(key, value)));
+		updateBuildVariables(build, ImmutableList.of(new StringParameterValue(key, value)));
 	}
 }

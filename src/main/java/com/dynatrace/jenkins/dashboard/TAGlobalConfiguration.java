@@ -37,12 +37,14 @@ import com.dynatrace.sdk.server.systemprofiles.SystemProfiles;
 import hudson.Extension;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import hudson.util.Secret;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -51,6 +53,7 @@ import static java.net.HttpURLConnection.*;
 /**
  * Created by krzysztof.necel on 2016-02-10.
  */
+@SuppressWarnings("WeakerAccess")
 @Extension
 public class TAGlobalConfiguration extends GlobalConfiguration {
 
@@ -62,18 +65,20 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 	private static final int DEFAULT_DELAY = 0; // seconds
 	private static final int DEFAULT_RETRY_COUNT = 3;
 	private static final boolean DEFAULT_VALIDATE_CERTS = true;
+	private static final String JSON_OBJECT_NAME = "dynatrace-test-automation"; // section name from config.jelly
 
 	public String protocol = getDefaultProtocol();
 	public String host = getDefaultHost();
 	public Integer port = getDefaultPort();
 	public String username = getDefaultUsername();
-	public String password = getDefaultPassword();
+	public Secret password = getDefaultPassword();
 	public Integer delay = getDefaultDelay();        // time to wait before trying to get data from the DT server in seconds
 	public Integer retryCount = getDefaultRetryCount();
 	public Boolean validateCerts = getDefaultValidateCerts();
 
 	public TAGlobalConfiguration() {
-		load(); // KN: load config from XML file on startup
+		// load config from XML file on startup
+		load();
 	}
 
 	public static String getDefaultProtocol() {
@@ -92,7 +97,7 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 		return DEFAULT_USERNAME;
 	}
 
-	public static String getDefaultPassword() { return DEFAULT_PASSWORD; }
+	public static Secret getDefaultPassword() { return Secret.fromString(DEFAULT_PASSWORD); }
 
 	public static int getDefaultDelay() {
 		return DEFAULT_DELAY;
@@ -106,9 +111,10 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 		return DEFAULT_VALIDATE_CERTS;
 	}
 
+	@SuppressWarnings("RedundantThrows")
 	@Override
 	public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-		req.bindJSON(this, json.getJSONObject("dynatrace-test-automation")); // KN: section name from config.jelly
+		req.bindJSON(this, json.getJSONObject(JSON_OBJECT_NAME));
 		save();
 		return true;
 	}
@@ -155,6 +161,7 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 				return FormValidation.ok();
 			}
 		} catch (NumberFormatException e) {
+			// ignore exception, covered by fallback error
 		}
 		return FormValidation.error(Messages.RECORDER_VALIDATION_DELAY_NAN());
 	}
@@ -166,10 +173,12 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 				return FormValidation.ok();
 			}
 		} catch (NumberFormatException e) {
+			// ignore exception, covered by fallback error
 		}
 		return FormValidation.error(Messages.RECORDER_VALIDATION_RETRY_COUNT_NAN());
 	}
 
+	@RequirePOST
 	public FormValidation doTestDynatraceConnection(
 			@QueryParameter("protocol") final String protocol,
 			@QueryParameter("host") final String host,

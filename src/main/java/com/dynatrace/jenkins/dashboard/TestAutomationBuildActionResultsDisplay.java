@@ -50,11 +50,6 @@ public class TestAutomationBuildActionResultsDisplay implements ModelObject {
   private static AbstractBuild<?, ?> currentBuild = null;
   private TestAutomationReport currentReport;
 
-  /**
-   * Parses the reports and build a {@link TestAutomationBuildActionResultsDisplay}.
-   *
-   * @throws java.io.IOException If a report fails to parse.
-   */
   public TestAutomationBuildActionResultsDisplay(final TestAutomationBuildAction buildAction, TaskListener listener)
       throws IOException {
     this.buildAction = buildAction;

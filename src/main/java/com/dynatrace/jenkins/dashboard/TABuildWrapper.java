@@ -88,16 +88,17 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 
 	public final String systemProfile;
 	// Test run attributes - no versionBuild attribute because it's taken from the build object
-	public String versionMajor;
-	public String versionMinor;
-	public String versionRevision;
-	public String versionMilestone;
-	public String marker;
-	public Boolean recordSession;
+	private String versionMajor;
+	private String versionMinor;
+	private String versionRevision;
+	private String versionMilestone;
+	private String marker;
+	private Boolean recordSession;
 
 	/**
 	 * @deprecated use {@link #TABuildWrapper(String systemProfile)} and DataBoundSetters instead.
 	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	private TABuildWrapper(final String systemProfile, final String versionMajor, final String versionMinor,
 						  final String versionRevision, final String versionMilestone, final String marker,
 						  final Boolean recordSession) {
@@ -110,6 +111,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		this.recordSession = recordSession;
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	@DataBoundConstructor
 	public TABuildWrapper(String systemProfile) {
 		this(systemProfile, "", "", "", "", "", false);
@@ -145,6 +147,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		this.recordSession = recordSession;
 	}
 
+	@SuppressWarnings("RedundantThrows")
 	@Override
 	public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener, EnvVars initialEnvironment) throws IOException, InterruptedException {
 		Sessions sessions = new Sessions(Utils.createClient());
@@ -204,8 +207,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 			if (StringUtils.isNotEmpty(globalConfig.username)) {
 				parameters.add(new StringParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_USERNAME, globalConfig.username));
 			}
-			if (StringUtils.isNotEmpty(globalConfig.password)) {
-				parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password));
+			if (StringUtils.isNotEmpty(globalConfig.password.getPlainText())) {
+				parameters.add(new PasswordParameterValue(BuildVarKeys.BUILD_VAR_KEY_GLOBAL_PASSWORD, globalConfig.password.getPlainText()));
 			}
 		}
 		Utils.updateBuildVariables(build, parameters);
@@ -235,9 +238,8 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 		public FormValidation doCheckSystemProfile(@QueryParameter final String systemProfile) {
 			if (StringUtils.isNotBlank(systemProfile)) {
 				return FormValidation.ok();
-			} else {
-				return FormValidation.error(Messages.RECORDER_VALIDATION_BLANK_SYSTEM_PROFILE());
 			}
+			return FormValidation.error(Messages.RECORDER_VALIDATION_BLANK_SYSTEM_PROFILE());
 		}
 
 		public FormValidation doTestDynatraceConnection(@QueryParameter final String systemProfile) {
@@ -297,6 +299,7 @@ public class TABuildWrapper extends SimpleBuildWrapper {
 			return sessionName;
 		}
 
+		@SuppressWarnings("RedundantThrows")
 		@Override
 		public void tearDown(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
 			PrintStream logger = listener.getLogger();

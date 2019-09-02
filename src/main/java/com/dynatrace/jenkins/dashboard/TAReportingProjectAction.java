@@ -62,7 +62,7 @@ import java.util.TreeMap;
  * Created by krzysztof.necel on 2016-02-05.
  * @author piotr.lugowski
  */
-public class TAReportingProjectAction implements Action{
+public class TAReportingProjectAction implements Action {
 
 	private static final String URL_NAME = "dynatrace-test-result-trend";
 
@@ -75,9 +75,9 @@ public class TAReportingProjectAction implements Action{
 	private static final Color COLOR_IMPROVED = new Color(0x00a6fb);
 	private static final Color COLOR_VOLATILE = new Color(0xffe11c);
 
-	private abstract class GraphImpl extends Graph {
+	private abstract static class GraphImpl extends Graph {
 
-		protected GraphImpl() {
+		GraphImpl() {
 			super(-1, 500, 300); // cannot use timestamp, since ranges may change
 		}
 
@@ -114,7 +114,7 @@ public class TAReportingProjectAction implements Action{
 			categoryaxis.setCategoryMargin(0.0D);
 			categoryaxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
 
-			// KN: force the chart axis to have only integer values
+			// force the chart axis to have only integer values
 			plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 			return chart;
@@ -123,6 +123,7 @@ public class TAReportingProjectAction implements Action{
 
 	private final Job<?, ?> project;
 
+	@SuppressWarnings("WeakerAccess")
 	public TAReportingProjectAction(Job<?,?> project) {
 		this.project = project;
 	}
@@ -148,6 +149,10 @@ public class TAReportingProjectAction implements Action{
 
 	/**
 	 * Generates graph with the number of tests executed in each category for {@link #MAX_BUILD_NUMBER_TO_SHOW_ON_CHART} latest builds.
+	 *
+	 * @param request request sent to generate the graph
+	 * @param response response to modify (if needed)
+	 * @throws IOException when PNG file creation was not possible
 	 */
 	public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
 		final Map<ChartUtil.NumberOnlyBuildLabel, Map<TestStatus, Integer>> summaries = new TreeMap<>();
@@ -155,7 +160,7 @@ public class TAReportingProjectAction implements Action{
 		List<TAReport> reports = getExistingReportsList(MAX_BUILD_NUMBER_TO_SHOW_ON_CHART);
 		for (TAReport report : reports) {
 			Map<TestStatus, Integer> summary = report.getSummary();
-			summaries.put(new ChartUtil.NumberOnlyBuildLabel((Run<?, ?>) report.getBuild()), summary);
+			summaries.put(new ChartUtil.NumberOnlyBuildLabel(report.getBuild()), summary);
 		}
 
 		final Graph graph = new GraphImpl() {
@@ -200,7 +205,8 @@ public class TAReportingProjectAction implements Action{
 
 			if (buildAction != null) {
 				report = buildAction.getCurrentReport();
-			} else { // KN: FOR BACKWARD COMPATIBILITY
+			} else {
+				// backward compatibility
 				report = UtilsCompat.getCompatReport(currentBuild);
 			}
 

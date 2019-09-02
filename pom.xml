@@ -69,8 +69,10 @@ DAMAGE.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jenkins.version>2.0</jenkins.version>
+    <checkstyle.skip>true</checkstyle.skip>
     <findbugs.skip>true</findbugs.skip>
     <argLine />
+    <java.level>8</java.level>
   </properties>
 
   <build>
@@ -84,10 +86,15 @@ DAMAGE.
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>8</source>
+          <target>8</target>
           <showWarnings>true</showWarnings>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.5</version>
       </plugin>
     </plugins>
   </build>

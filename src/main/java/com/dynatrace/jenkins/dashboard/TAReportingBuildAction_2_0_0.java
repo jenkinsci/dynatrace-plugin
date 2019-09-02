@@ -132,10 +132,6 @@ public class TAReportingBuildAction_2_0_0 implements Action, StaplerProxy, Simpl
 		previousReport = prevBuildAction.getCurrentReport();
 	}
 
-	/**
-	 * Custom message format method. Used in jelly script to be able to resolve externalized strings only once per request.
-	 * It significantly improves performance in old Jenkins versions but code is a bit less clear.
-	 */
 	public static String formatMessage(String pattern, Object argument) {
 		return MessageFormat.format(pattern, argument);
 	}
