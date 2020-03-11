@@ -39,6 +39,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import jenkins.model.GlobalConfiguration;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -186,7 +187,11 @@ public class TAGlobalConfiguration extends GlobalConfiguration {
 			@QueryParameter("username") final String username,
 			@QueryParameter("validateCerts") final boolean validateCerts,
 			@QueryParameter("password") final String password) {
-
+		final Jenkins instance = Jenkins.getInstance();
+		if (instance == null) {
+			throw new IllegalStateException("Jenkins instance not available. Could not handle test connection request.");
+		}
+		instance.checkPermission(Jenkins.ADMINISTER);
 		try {
 			final SystemProfiles connection = new SystemProfiles(new DynatraceClient(new BasicServerConfiguration(username, password, protocol.startsWith("https"), host, Integer.parseInt(port), validateCerts, 10000)));
 			try {
